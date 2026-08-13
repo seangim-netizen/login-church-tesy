@@ -1520,12 +1520,34 @@
     }
 
     function switchBibleVersion() {
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+      }
+      isTTSSpeaking = false;
+
       if (currentBibleVersion === 'KG') currentBibleVersion = 'KH';
       else if (currentBibleVersion === 'KH') currentBibleVersion = 'SB';
       else currentBibleVersion = 'KG';
+
       localStorage.setItem(PERMANENT_VER_KEY, currentBibleVersion);
       updateBibleVersionUI();
+
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+      
+      // Check if DB for requested version is loaded
+      var dbReady = false;
+      if (currentBibleVersion === 'KG') dbReady = !!(window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_FULL_DB);
+      if (currentBibleVersion === 'KH') dbReady = !!(window.BIBLE_FULL_DB_KH || window.BIBLE_66_DB_KH);
+      if (currentBibleVersion === 'SB') dbReady = !!(window.BIBLE_FULL_DB_SB || window.BIBLE_66_DB_SB);
+
+      if (!dbReady) {
+        showToast('[' + verName + '] 전체 DB 로딩 중입니다. 잠시 후 자동 전환됩니다.');
+        setTimeout(function() {
+          renderBible(scheduleData[activeDay] || scheduleData[1]);
+        }, 800);
+        return;
+      }
+
       showToast('성경 역본이 [' + verName + '] (으)로 변경되었습니다.');
       renderBible(scheduleData[activeDay] || scheduleData[1]);
     }
