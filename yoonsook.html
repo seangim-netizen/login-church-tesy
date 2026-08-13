@@ -1520,54 +1520,14 @@
     }
 
     function switchBibleVersion() {
-      var wasSpeaking = isTTSSpeaking;
-      var savedIndex = currentTTSIndex;
-
-      if ('speechSynthesis' in window) {
-        try { window.speechSynthesis.cancel(); } catch(e) {}
-      }
-      isTTSSpeaking = false;
-
       if (currentBibleVersion === 'KG') currentBibleVersion = 'KH';
       else if (currentBibleVersion === 'KH') currentBibleVersion = 'SB';
       else currentBibleVersion = 'KG';
       localStorage.setItem(PERMANENT_VER_KEY, currentBibleVersion);
       updateBibleVersionUI();
-      
-      renderBible(scheduleData[activeDay]);
-
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      
-      if (wasSpeaking) {
-        ttsSpeechItems = [];
-        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
-        allReaderElements.forEach(function(el) {
-          if (el.classList.contains('bible-chapter-header')) {
-            var chText = el.innerText.replace('📖 ', '').trim();
-            ttsSpeechItems.push({ element: el, speakText: chText });
-          } else if (el.classList.contains('bible-verse-card')) {
-            var vPureText = el.getAttribute('data-puretext') || el.innerText;
-            ttsSpeechItems.push({ element: el, speakText: vPureText });
-          }
-        });
-
-        if (savedIndex < ttsSpeechItems.length) {
-          currentTTSIndex = savedIndex;
-        } else {
-          currentTTSIndex = 0;
-        }
-
-        selectedCursorVerseIndex = currentTTSIndex;
-        isTTSSpeaking = true;
-        isTTSPaused = false;
-        
-        showToast(verName + ' 전환: 읽던 구절부터 이어서 낭독합니다.');
-        enableBackgroundAudioSession();
-        updatePlayerControlsUI();
-        speakNextVerseTTS();
-      } else {
-        showToast(verName + ' 전환');
-      }
+      showToast('성경 역본이 [' + verName + '] (으)로 변경되었습니다.');
+      renderBible(scheduleData[activeDay] || scheduleData[1]);
     }
 
     function updateBibleVersionUI() {
@@ -1968,26 +1928,24 @@
     }
 
         function getBibleDatabase() {
-      var candidates = [];
+      var db = null;
       if (currentBibleVersion === 'KH') {
-        candidates = [window.BIBLE_FULL_DB_KH, window.BIBLE_66_DB_KH, window.BIBLE_FULL_DB, window.BIBLE_66_DB_KG, window.BIBLE_FULL_DB_KG, window.BIBLE_DB];
+        db = (window.BIBLE_FULL_DB_KH && Object.keys(window.BIBLE_FULL_DB_KH).length > 0) ? window.BIBLE_FULL_DB_KH : window.BIBLE_66_DB_KH;
       } else if (currentBibleVersion === 'SB') {
-        candidates = [window.BIBLE_FULL_DB_SB, window.BIBLE_66_DB_SB, window.BIBLE_FULL_DB, window.BIBLE_66_DB_KG, window.BIBLE_FULL_DB_KG, window.BIBLE_DB];
-      } else {
-        candidates = [window.BIBLE_FULL_DB_KG, window.BIBLE_66_DB_KG, window.BIBLE_FULL_DB, window.BIBLE_FULL_DB_KH, window.BIBLE_FULL_DB_SB, window.BIBLE_DB];
+        db = (window.BIBLE_FULL_DB_SB && Object.keys(window.BIBLE_FULL_DB_SB).length > 0) ? window.BIBLE_FULL_DB_SB : window.BIBLE_66_DB_SB;
+      } else if (currentBibleVersion === 'KG') {
+        db = (window.BIBLE_FULL_DB_KG && Object.keys(window.BIBLE_FULL_DB_KG).length > 0) ? window.BIBLE_FULL_DB_KG : (window.BIBLE_66_DB_KG || window.BIBLE_FULL_DB);
       }
 
-      var merged = {};
-      candidates.forEach(function(cand) {
-        if (cand && typeof cand === 'object') {
-          Object.keys(cand).forEach(function(bName) {
-            if (!merged[bName] || (typeof merged[bName] === 'object' && Object.keys(merged[bName]).length === 0)) {
-              merged[bName] = cand[bName];
-            }
-          });
-        }
-      });
-      return merged;
+      if (!db || Object.keys(db).length === 0) {
+        if (window.BIBLE_FULL_DB && Object.keys(window.BIBLE_FULL_DB).length > 0) db = window.BIBLE_FULL_DB;
+        else if (window.BIBLE_66_DB_KG && Object.keys(window.BIBLE_66_DB_KG).length > 0) db = window.BIBLE_66_DB_KG;
+        else if (window.BIBLE_FULL_DB_KG && Object.keys(window.BIBLE_FULL_DB_KG).length > 0) db = window.BIBLE_FULL_DB_KG;
+        else if (window.BIBLE_66_DB_SB && Object.keys(window.BIBLE_66_DB_SB).length > 0) db = window.BIBLE_66_DB_SB;
+        else if (window.BIBLE_66_DB_KH && Object.keys(window.BIBLE_66_DB_KH).length > 0) db = window.BIBLE_66_DB_KH;
+        else db = {};
+      }
+      return db;
     }
 
     function renderBible(item, isRetry) {
