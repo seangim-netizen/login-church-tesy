@@ -458,7 +458,22 @@
       margin-top: 6px;
     }
   
-    /* ONLY MEMO MULTILINE WRAPPING & CONTAINMENT CSS */
+    .btn-copy-journal-box {
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      background: transparent;
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-copy-journal-box:hover {
+      background: var(--accent-gold);
+      color: #121824;
+    }
     .note-indicator {
       margin-top: 6px;
       padding: 8px 12px;
@@ -1863,6 +1878,60 @@
         }
       }
     });
+
+  
+    // ISOLATED TAB 2 COPY ENGINE (100% DECOUPLED FROM BIBLE READER)
+    function copyGraceContent() {
+      var el = document.getElementById('editorGrace');
+      var text = el ? el.value.trim() : '';
+      if (!text) {
+        showToast('은혜받은 말씀에 작성된 내용이 없습니다.');
+        return;
+      }
+      safeCopyToClipboard(text, '은혜받은 말씀 구절이 클립보드에 복사되었습니다!');
+    }
+
+    function copyLessonContent() {
+      var el = document.getElementById('editorLesson');
+      var text = el ? el.value.trim() : '';
+      if (!text) {
+        showToast('받은 교훈 및 적용에 작성된 내용이 없습니다.');
+        return;
+      }
+      safeCopyToClipboard(text, '받은 교훈 및 적용 묵상이 클립보드에 복사되었습니다!');
+    }
+
+    function safeCopyToClipboard(strText, toastMsg) {
+      if (!strText) return;
+
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        navigator.clipboard.writeText(strText).then(function() {
+          showToast(toastMsg);
+        }).catch(function() {
+          fallbackSafeCopy(strText, toastMsg);
+        });
+        return;
+      }
+      fallbackSafeCopy(strText, toastMsg);
+    }
+
+    function fallbackSafeCopy(strText, toastMsg) {
+      try {
+        var tempArea = document.createElement('textarea');
+        tempArea.value = strText;
+        tempArea.style.position = 'fixed';
+        tempArea.style.top = '0';
+        tempArea.style.left = '-9999px';
+        document.body.appendChild(tempArea);
+        tempArea.focus();
+        tempArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempArea);
+        showToast(toastMsg);
+      } catch(e) {
+        showToast(toastMsg);
+      }
+    }
 
   </script>
   <audio id="bgSilentAudio" loop preload="auto" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="></audio>
