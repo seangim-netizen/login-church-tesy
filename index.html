@@ -2088,6 +2088,7 @@
             var formattedCopyStr = '[' + bookName + ' ' + c + ':' + vNum + '] ' + vText;
             var savedNoteRaw = verseNotes[verseKey] || '';
             var savedNote = (typeof savedNoteRaw === 'object' && savedNoteRaw !== null) ? (savedNoteRaw.noteText || '') : (savedNoteRaw || '');
+            var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
             var itemEl = document.createElement('div');
             itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
@@ -2096,11 +2097,6 @@
             itemEl.setAttribute('data-puretext', vText);
             itemEl.setAttribute('data-copystr', formattedCopyStr);
             itemEl.setAttribute('data-lasttap', '0');
-            var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
-
-            var savedNoteRaw = verseNotes[verseKey] || '';
-            var savedNote = (typeof savedNoteRaw === 'object' && savedNoteRaw !== null) ? (savedNoteRaw.noteText || '') : (savedNoteRaw || '');
-            var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
             itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
               '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
@@ -2116,10 +2112,8 @@
             var isLongPressExecuted = false;
 
             itemEl.addEventListener('touchstart', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-              
+              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-save-note-inside')) return;
               isLongPressExecuted = false;
-
               if (pressTimer) clearTimeout(pressTimer);
               pressTimer = setTimeout(function() {
                 isLongPressExecuted = true;
@@ -2130,11 +2124,8 @@
 
             itemEl.addEventListener('touchend', function(e) {
               if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-
-              if (isLongPressExecuted) {
-                return;
-              }
+              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-save-note-inside')) return;
+              if (isLongPressExecuted) return;
 
               var currentTime = new Date().getTime();
               var lastTapTime = parseInt(itemEl.getAttribute('data-lasttap') || '0', 10);
@@ -2154,33 +2145,19 @@
             });
 
             itemEl.addEventListener('dblclick', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-save-note-inside')) return;
               openNoteBox(verseKey);
             });
 
-            var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
-            if (btnCopy) {
-              btnCopy.onclick = function(ev) {
-                ev.stopPropagation();
-                var rawVal = verseNotes[verseKey] || '';
-                var noteVal = (typeof rawVal === 'object' && rawVal !== null) ? (rawVal.noteText || '') : (rawVal || '');
-                if (noteVal.trim().length > 0) {
-                  copyTextToClipboard(noteVal, '작성한 메모가 복사되었습니다!');
-                }
-              };
-            }
-
             var btnSave = itemEl.querySelector('#btnsave_' + verseKey);
             if (btnSave) {
-              var handleSaveClick = function(ev) {
+              btnSave.onclick = function(ev) {
                 if (ev) {
                   ev.preventDefault();
                   ev.stopPropagation();
                 }
                 saveNoteInside(verseKey);
               };
-              btnSave.onclick = handleSaveClick;
-              btnSave.ontouchend = handleSaveClick;
             }
 
             container.appendChild(itemEl);
