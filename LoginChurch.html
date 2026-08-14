@@ -651,11 +651,17 @@
         ✏️ 통독 일기 작성
       </div>
       <div class="journal-box">
-        <div class="journal-box-title">📖 은혜받은 말씀</div>
+        <div class="journal-box-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+          <div class="journal-box-title" style="margin-bottom: 0;">📖 은혜받은 말씀</div>
+          <button class="btn-copy-journal-box" onclick="copyGraceContent()">📋 복사하기</button>
+        </div>
         <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
       </div>
       <div class="journal-box">
-        <div class="journal-box-title">💡 받은 교훈 및 적용</div>
+        <div class="journal-box-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+          <div class="journal-box-title" style="margin-bottom: 0;">💡 받은 교훈 및 적용</div>
+          <button class="btn-copy-journal-box" onclick="copyLessonContent()">📋 복사하기</button>
+        </div>
         <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
       </div>
     </section>
