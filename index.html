@@ -713,7 +713,18 @@
         try {
           var parsed = JSON.parse(saved);
           journals = parsed.journals || {};
-          verseNotes = parsed.verseNotes || {};
+          var rawNotes = parsed.verseNotes || {};
+          verseNotes = {};
+          for (var k in rawNotes) {
+            if (rawNotes.hasOwnProperty(k)) {
+              var v = rawNotes[k];
+              if (typeof v === 'object' && v !== null) {
+                verseNotes[k] = (v.noteText || v.note || '').toString();
+              } else {
+                verseNotes[k] = (v || '').toString();
+              }
+            }
+          }
           dataLoaded = true;
         } catch(e) {}
       }
@@ -1506,7 +1517,8 @@
             var vNum = (idx + 1);
             var verseKey = bookName + '_' + c + '_' + vNum;
             var formattedCopyStr = '[' + bookName + ' ' + c + ':' + vNum + '] ' + vText;
-            var savedNote = verseNotes[verseKey] || '';
+            var savedNoteRaw = verseNotes[verseKey] || '';
+            var savedNote = (typeof savedNoteRaw === 'object' && savedNoteRaw !== null) ? (savedNoteRaw.noteText || savedNoteRaw.note || '').toString() : savedNoteRaw.toString();
 
             var itemEl = document.createElement('div');
             itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
