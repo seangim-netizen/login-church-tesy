@@ -705,13 +705,13 @@
       <div class="journal-grid-container" style="margin-bottom: 8px;">
         <div class="journal-section-header-box">
           <div class="journal-box-title-row">
-            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.92rem;">📖 은혜받은 말씀</div>
+            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.86rem; white-space: nowrap; flex-shrink: 0;">📖 은혜받은 말씀</div>
             <button class="btn-copy-note-sm" onclick="copyGraceToClipboard()">📋 구절 복사</button>
           </div>
         </div>
         <div class="journal-section-header-box">
           <div class="journal-box-title-row">
-            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.92rem;">💡 받은 교훈 및 적용</div>
+            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.86rem; white-space: nowrap; flex-shrink: 0;">💡 받은 교훈 및 적용</div>
             <button class="btn-copy-note-sm" onclick="copyLessonToClipboard()">📋 묵상 복사</button>
           </div>
         </div>
@@ -2110,7 +2110,8 @@
             var vNum = (idx + 1);
             var verseKey = bookName + '_' + c + '_' + vNum;
             var formattedCopyStr = '[' + bookName + ' ' + c + ':' + vNum + '] ' + vText;
-            var savedNote = verseNotes[verseKey] || '';
+            var savedNoteRaw = verseNotes[verseKey] || '';
+            var savedNote = (typeof savedNoteRaw === 'object' && savedNoteRaw !== null) ? (savedNoteRaw.noteText || '') : (savedNoteRaw || '');
 
             var itemEl = document.createElement('div');
             itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
@@ -2182,7 +2183,8 @@
             if (btnCopy) {
               btnCopy.onclick = function(ev) {
                 ev.stopPropagation();
-                var noteVal = verseNotes[verseKey] || '';
+                var rawVal = verseNotes[verseKey] || '';
+                var noteVal = (typeof rawVal === 'object' && rawVal !== null) ? (rawVal.noteText || '') : (rawVal || '');
                 if (noteVal.trim().length > 0) {
                   copyTextToClipboard(noteVal, '작성한 메모가 복사되었습니다!');
                 }
