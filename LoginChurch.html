@@ -917,6 +917,11 @@
 
     // TOUCH VERSE HANDLER
     function handleVerseElementTouch(targetEl) {
+      // When audio is currently playing, ignore taps on verse cards so user can scroll freely without interrupting playback!
+      if (isTTSSpeaking) {
+        return;
+      }
+
       if (ttsSpeechItems.length === 0) {
         ttsSpeechItems = [];
         var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
@@ -947,22 +952,11 @@
         });
         targetEl.classList.add('selected-cursor-verse');
 
-        if (isTTSSpeaking) {
-          // If ALREADY playing audio, jump reading to touched verse
-          currentTTSIndex = targetIdx;
-          if ('speechSynthesis' in window) {
-            try { window.speechSynthesis.cancel(); } catch(e) {}
-          }
-          updatePlayerControlsUI();
-          speakNextVerseTTS();
+        var vNum = targetEl.getAttribute('data-vnum');
+        if (vNum) {
+          showToast(vNum + '절이 선택되었습니다. [🔊 재생] 버튼을 누르면 이 구절부터 낭독합니다.');
         } else {
-          // If NOT currently playing: SELECT IT for when user clicks [🔊 재생]
-          var vNum = targetEl.getAttribute('data-vnum');
-          if (vNum) {
-            showToast(vNum + '절이 선택되었습니다. [🔊 재생] 버튼을 누르면 이 구절부터 낭독합니다.');
-          } else {
-            showToast('선택된 위치부터 낭독 준비되었습니다. [🔊 재생] 버튼을 누르세요.');
-          }
+          showToast('선택된 위치부터 낭독 준비되었습니다. [🔊 재생] 버튼을 누르세요.');
         }
       }
     }
@@ -1811,6 +1805,62 @@
         }
       }
     });
+
+  
+    // ITUNES / APPLE MUSIC STYLE BACKGROUND AUDIO ENGINE
+    var bgAudioContext = null;
+    var bgAudioElement = null;
+
+    function initBackgroundMusicMode() {
+      if (!bgAudioElement) {
+        bgAudioElement = document.getElementById('bgSilentAudio');
+        if (!bgAudioElement) {
+          bgAudioElement = document.createElement('audio');
+          bgAudioElement.id = 'bgSilentAudio';
+          bgAudioElement.loop = true;
+          bgAudioElement.preload = 'auto';
+          bgAudioElement.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+          document.body.appendChild(bgAudioElement);
+        }
+      }
+
+      try {
+        bgAudioElement.play().catch(function(e){});
+      } catch(e) {}
+
+      try {
+        var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass && !bgAudioContext) {
+          bgAudioContext = new AudioContextClass();
+          var osc = bgAudioContext.createOscillator();
+          var gain = bgAudioContext.createGain();
+          gain.gain.value = 0.0001;
+          osc.connect(gain);
+          gain.connect(bgAudioContext.destination);
+          osc.start();
+        }
+        if (bgAudioContext && bgAudioContext.state === 'suspended') {
+          bgAudioContext.resume();
+        }
+      } catch(e) {}
+
+      if ('wakeLock' in navigator) {
+        try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
+      }
+    }
+
+    if (!window.itunesBgKeeper) {
+      window.itunesBgKeeper = setInterval(function() {
+        if (isTTSSpeaking) {
+          if (bgAudioContext && bgAudioContext.state === 'suspended') {
+            try { bgAudioContext.resume(); } catch(e) {}
+          }
+          if ('speechSynthesis' in window && window.speechSynthesis.paused) {
+            try { window.speechSynthesis.resume(); } catch(e) {}
+          }
+        }
+      }, 2000);
+    }
 
   </script>
   <audio id="bgSilentAudio" loop preload="auto" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="></audio>
