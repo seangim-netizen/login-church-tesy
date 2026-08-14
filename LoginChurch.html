@@ -479,6 +479,96 @@
       min-height: 220px;
     }
 
+
+    /* 100% PERFECT HORIZONTAL LINE ALIGNMENT (줄맞춤) JOURNAL ROW CARDS */
+    .journal-section-header-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+    .journal-box-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .btn-copy-note-sm {
+      background: var(--input-bg);
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .btn-copy-note-sm:active { opacity: 0.8; }
+
+    .journal-grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .journal-row-card {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .journal-col-left {
+      background: var(--input-bg);
+      border-left: 4px solid var(--accent-green);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      word-break: break-word;
+    }
+    .journal-col-right {
+      background: var(--input-bg);
+      border-left: 4px solid var(--accent-gold);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      word-break: break-word;
+    }
+    .journal-verse-tag {
+      font-size: 0.84rem;
+      font-weight: bold;
+      color: var(--accent-green);
+      line-height: 1.3;
+    }
+    .journal-note-tag {
+      font-size: 0.84rem;
+      font-weight: bold;
+      color: var(--accent-gold);
+      line-height: 1.3;
+    }
+    .journal-verse-text, .journal-note-text {
+      font-size: 0.90rem;
+      line-height: 1.6;
+      word-break: break-word;
+      white-space: pre-wrap;
+      color: var(--text-primary);
+    }
+
 </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
@@ -611,24 +701,30 @@
       <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
         ✏️ 통독 일기 작성
       </div>
-      <div class="journal-grid-container">
-        <div class="journal-box">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.95rem;">📖 은혜받은 말씀</div>
-            <button class="btn-copy-note" onclick="copyGraceToClipboard()">📋 구절 복사</button>
+      <!-- 2-COLUMN HEADER WITH COMPACT COPY BUTTONS -->
+      <div class="journal-grid-container" style="margin-bottom: 8px;">
+        <div class="journal-section-header-box">
+          <div class="journal-box-title-row">
+            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.92rem;">📖 은혜받은 말씀</div>
+            <button class="btn-copy-note-sm" onclick="copyGraceToClipboard()">📋 구절 복사</button>
           </div>
-          <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
         </div>
-        <div class="journal-box">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.95rem;">💡 받은 교훈 및 적용</div>
-            <button class="btn-copy-note" onclick="copyLessonToClipboard()">📋 묵상 복사</button>
+        <div class="journal-section-header-box">
+          <div class="journal-box-title-row">
+            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.92rem;">💡 받은 교훈 및 적용</div>
+            <button class="btn-copy-note-sm" onclick="copyLessonToClipboard()">📋 묵상 복사</button>
           </div>
-          <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
         </div>
       </div>
-      <div style="margin-top: 8px; margin-bottom: 24px;">
-        <button class="btn-copy-note" onclick="copyFullJournalToClipboard()" style="width: 100%; padding: 12px; font-size: 0.95rem; background: var(--accent-green); color: #ffffff; border: none; border-radius: 10px;">
+
+      <!-- ALIGNED ROW CARDS CONTAINER (줄맞춤 연동) -->
+      <div id="journalAlignedRowsContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
+
+      <textarea id="editorGrace" style="display:none;"></textarea>
+      <textarea id="editorLesson" style="display:none;"></textarea>
+
+      <div style="margin-top: 14px; margin-bottom: 24px;">
+        <button class="btn-copy-note" onclick="copyFullJournalToClipboard()" style="width: 100%; padding: 12px; font-size: 0.95rem; background: var(--accent-green); color: #ffffff; border: none; border-radius: 10px; font-weight: bold;">
           📋 오늘 성경 구절 &amp; 묵상 전체 복사하기
         </button>
       </div>
@@ -1926,7 +2022,7 @@
         }
 
         // Sync with Journal Tab automatically
-        syncVerseNotesToJournalForDay(activeDay);
+        renderJournalAlignedRows(activeDay);
       }
     }
 
@@ -2423,6 +2519,124 @@
         copyTextToClipboard(fullText.trim(), '📖 오늘 작성한 성경 구절 및 묵상 전체 복사 완료!');
       } else {
         showToast('복사할 일기 내용이 없습니다.');
+      }
+    }
+
+  
+    // MOBILE NETWORK SMARTPHONE DB LOAD LISTENER (FOR IPHONE & GALAXY)
+    document.addEventListener('DOMContentLoaded', function() {
+      var script66 = document.querySelector('script[src*="bible_db_66.js"]');
+      if (script66) {
+        script66.addEventListener('load', function() {
+          if (scheduleData && scheduleData[activeDay]) {
+            renderBible(scheduleData[activeDay]);
+          }
+        });
+      }
+    });
+
+    var mobileDbCheckCount = 0;
+    var mobileDbCheckTimer = setInterval(function() {
+      mobileDbCheckCount++;
+      if (window.BIBLE_66_DB_KG || window.BIBLE_66_DB_SB || window.BIBLE_66_DB_KH) {
+        clearInterval(mobileDbCheckTimer);
+        if (scheduleData && scheduleData[activeDay]) {
+          renderBible(scheduleData[activeDay]);
+        }
+      }
+      if (mobileDbCheckCount > 25) clearInterval(mobileDbCheckTimer);
+    }, 400);
+
+  
+    function renderJournalAlignedRows(dayNum) {
+      if (!dayNum) dayNum = activeDay;
+      var dayKey = 'day_' + dayNum;
+      var item = scheduleData[dayNum];
+      if (!item) return;
+
+      var container = document.getElementById('journalAlignedRowsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+      var notedVersesList = [];
+
+      (item.books || []).forEach(function(bInfo) {
+        var bookName = bInfo.book;
+        for (var c = bInfo.start; c <= bInfo.end; c++) {
+          var prefix = bookName + '_' + c + '_';
+          Object.keys(verseNotes).forEach(function(vk) {
+            if (vk.indexOf(prefix) === 0) {
+              var nData = verseNotes[vk];
+              var noteText = (typeof nData === 'object' && nData !== null) ? (nData.noteText || '') : (nData || '');
+              if (noteText.trim().length > 0) {
+                var vParts = vk.split('_');
+                var vNum = vParts[2] || '';
+                var verName = (typeof nData === 'object' && nData && nData.verName) ? nData.verName : currentVerName;
+                var pureText = (typeof nData === 'object' && nData && nData.pureText) ? nData.pureText : '';
+
+                if (!pureText) {
+                  var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
+                  if (domCard) pureText = domCard.getAttribute('data-puretext') || domCard.innerText;
+                }
+
+                notedVersesList.push({
+                  verseKey: vk,
+                  book: bookName,
+                  chapter: c,
+                  vNum: parseInt(vNum, 10) || 0,
+                  verName: verName,
+                  pureText: pureText,
+                  noteText: noteText.trim()
+                });
+              }
+            }
+          });
+        }
+      });
+
+      // Sort by verse number
+      notedVersesList.sort(function(a, b) { return a.vNum - b.vNum; });
+
+      if (notedVersesList.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1; padding: 25px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">📝 오늘 읽으신 성경 구절에 묵상 메모를 작성해 보세요.<br>작성하신 구절과 묵상 내용이 이곳에 줄맞춤 연동됩니다.</div>';
+        return;
+      }
+
+      var fullGraceStrList = [];
+      var fullLessonStrList = [];
+
+      notedVersesList.forEach(function(vObj) {
+        var verseHeader = '[' + vObj.book + ' ' + vObj.chapter + ':' + vObj.vNum + ' ' + vObj.verName + ']';
+        var lessonHeader = '[' + vObj.book + ' ' + vObj.chapter + ':' + vObj.vNum + ' 묵상]';
+
+        fullGraceStrList.push(verseHeader + (vObj.pureText ? ' ' + vObj.pureText : ''));
+        fullLessonStrList.push(lessonHeader + ' ' + vObj.noteText);
+
+        var rowCard = document.createElement('div');
+        rowCard.className = 'journal-row-card';
+        rowCard.innerHTML = 
+          '<div class="journal-col-left">' +
+            '<div class="journal-verse-tag">' + verseHeader + '</div>' +
+            '<div class="journal-verse-text">' + (vObj.pureText || '') + '</div>' +
+          '</div>' +
+          '<div class="journal-col-right">' +
+            '<div class="journal-note-tag">' + lessonHeader + '</div>' +
+            '<div class="journal-note-text">' + vObj.noteText + '</div>' +
+          '</div>';
+
+        container.appendChild(rowCard);
+      });
+
+      var eg = document.getElementById('editorGrace');
+      var el = document.getElementById('editorLesson');
+      if (eg) eg.value = fullGraceStrList.join('\n\n');
+      if (el) el.value = fullLessonStrList.join('\n\n');
+
+      if (journals[dayKey]) {
+        journals[dayKey].grace = fullGraceStrList.join('\n\n');
+        journals[dayKey].lesson = fullLessonStrList.join('\n\n');
+        saveJournals();
       }
     }
 
