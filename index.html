@@ -174,7 +174,11 @@
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; pointer-events: none; }
 
     .note-indicator {
-      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 8px 10px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; line-height: 1.5; white-space: pre-wrap;
+      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 10px 12px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; overflow: hidden; max-width: 100%; box-sizing: border-box;
+    }
+
+    .note-text-content {
+      word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; display: block; max-width: 100%;
     }
 
     .btn-copy-note {
@@ -182,7 +186,7 @@
     }
 
     .verse-note-box {
-      width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 10px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 6px;
+      width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 12px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; overflow: hidden; max-width: 100%;
     }
 
     .memo-guide-text {
@@ -190,7 +194,7 @@
     }
 
     .verse-note-textarea {
-      width: 100%; min-height: 85px; background: transparent; border: none; color: var(--text-primary); font-size: 0.98rem; line-height: 1.55; outline: none; resize: vertical; font-family: inherit;
+      width: 100%; min-height: 90px; max-height: 500px; background: transparent; border: none; color: var(--text-primary); font-size: 0.98rem; line-height: 1.6; outline: none; resize: vertical; font-family: inherit; word-break: break-word; overflow-y: auto; box-sizing: border-box; padding: 4px 0;
     }
 
     .btn-save-note-inside {
@@ -205,7 +209,7 @@
 
     .journal-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
     .journal-box-title { font-size: 1.05rem; font-weight: bold; color: var(--accent-green); margin-bottom: 8px; }
-    textarea { width: 100%; min-height: 150px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: var(--verse-font-size); resize: vertical; outline: none; line-height: 1.6; }
+    textarea { width: 100%; min-height: 160px; max-height: 600px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: var(--verse-font-size); resize: vertical; outline: none; line-height: 1.6; word-break: break-word; overflow-y: auto; box-sizing: border-box; }
 
     .btn-install-guide {
       width: 100%;
@@ -2345,6 +2349,19 @@
     document.addEventListener('DOMContentLoaded', activateScreenWakeLock);
     document.addEventListener('click', activateScreenWakeLock);
     document.addEventListener('touchstart', activateScreenWakeLock, { passive: true });
+
+  
+    function autoExpandTextarea(el) {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = Math.max(el.scrollHeight, 90) + 'px';
+    }
+
+    document.addEventListener('input', function(e) {
+      if (e.target && e.target.tagName === 'TEXTAREA') {
+        autoExpandTextarea(e.target);
+      }
+    });
 
   </script>
 </body>
