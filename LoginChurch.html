@@ -131,7 +131,7 @@
 
     /* CLEAN 2-LINE FORMATTED GESTURE TIP BOX */
     .gesture-tip-box {
-      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 12px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: center; line-height: 1.5;
+      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 14px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: left; line-height: 1.5;
     }
 
     .daily-reading-banner {
@@ -497,6 +497,24 @@
       text-align: center;
       margin-top: 6px;
     }
+  
+    .btn-copy-journal-box {
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      background: transparent;
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-copy-journal-box:hover {
+      background: var(--accent-gold);
+      color: #121824;
+    }
+
   </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
@@ -611,8 +629,8 @@
 
       <!-- CLEAN 2-LINE FORMATTED GESTURE TIP BOX -->
       <div class="gesture-tip-box" id="readerTipBox">
-        💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>
-        💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모
+        💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>
+        💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)
       </div>
 
       <div id="bibleTextContainer"></div>
@@ -626,17 +644,25 @@
     </section>
 
     <!-- TAB 2: 일기쓰기 -->
-    <section id="tab-editor" class="tab-page">
-      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
-        ✏️ 통독 일기 작성
+        <section id="tab-editor" class="tab-page">
+      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+        <span>✏️ 통독 일기 작성</span>
       </div>
-      <div class="journal-box">
-        <div class="journal-box-title">📖 은혜받은 말씀</div>
-        <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
-      </div>
-      <div class="journal-box">
-        <div class="journal-box-title">💡 받은 교훈 및 적용</div>
-        <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
+      <div class="journal-grid-container">
+        <div class="journal-box">
+          <div class="journal-box-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div class="journal-box-title" style="margin-bottom: 0;">📖 은혜받은 말씀</div>
+            <button class="btn-copy-journal-box" onclick="copyGraceTextOnly()">📋 구절 복사</button>
+          </div>
+          <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
+        </div>
+        <div class="journal-box">
+          <div class="journal-box-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div class="journal-box-title" style="margin-bottom: 0;">💡 받은 교훈 및 적용</div>
+            <button class="btn-copy-journal-box" onclick="copyLessonTextOnly()">📋 묵상 복사</button>
+          </div>
+          <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
+        </div>
       </div>
     </section>
 
@@ -1289,12 +1315,12 @@
       }
       if (tip) {
         if (item.zoomInfo) {
-          tip.innerHTML = '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
-            '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
+          tip.innerHTML = '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
+            '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
             '<span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
         } else {
-          tip.innerHTML = '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
-            '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모';
+          tip.innerHTML = '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
+            '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)';
         }
       }
     }
@@ -1888,6 +1914,28 @@
           }
         }, 400);
       }
+    }
+
+  
+    // DEDICATED TAB 2 COPY FUNCTIONS
+    function copyGraceTextOnly() {
+      var el = document.getElementById('editorGrace');
+      var val = el ? el.value.trim() : '';
+      if (!val) {
+        showToast('은혜받은 말씀에 작성된 내용이 없습니다.');
+        return;
+      }
+      copyTextToClipboard(val, '은혜받은 말씀 구절이 복사되었습니다!');
+    }
+
+    function copyLessonTextOnly() {
+      var el = document.getElementById('editorLesson');
+      var val = el ? el.value.trim() : '';
+      if (!val) {
+        showToast('받은 교훈 및 적용에 작성된 내용이 없습니다.');
+        return;
+      }
+      copyTextToClipboard(val, '받은 교훈 및 적용 묵상이 복사되었습니다!');
     }
 
   </script>
