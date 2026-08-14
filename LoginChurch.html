@@ -985,15 +985,10 @@
     // TOUCH VERSE HANDLER
     function handleVerseElementTouch(targetEl) {
       ttsSpeechItems = [];
-      var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
+      var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-verse-card');
       allReaderElements.forEach(function(el) {
-        if (el.classList.contains('bible-chapter-header')) {
-          var chText = el.innerText.replace('📖 ', '').trim();
-          ttsSpeechItems.push({ element: el, speakText: chText });
-        } else if (el.classList.contains('bible-verse-card')) {
-          var vPureText = el.getAttribute('data-puretext') || el.innerText;
-          ttsSpeechItems.push({ element: el, speakText: vPureText });
-        }
+        var vPureText = el.getAttribute('data-puretext') || el.innerText;
+        ttsSpeechItems.push({ element: el, speakText: vPureText });
       });
 
       var targetIdx = -1;
@@ -1001,14 +996,6 @@
         if (ttsSpeechItems[i].element === targetEl) {
           targetIdx = i;
           break;
-        }
-      }
-
-      // If user tapped a chapter header (e.g. "📖 출애굽기 2장"), move starting target directly to 2장 1절!
-      if (targetIdx !== -1 && targetEl.classList.contains('bible-chapter-header')) {
-        if (targetIdx + 1 < ttsSpeechItems.length && ttsSpeechItems[targetIdx + 1].element.classList.contains('bible-verse-card')) {
-          targetIdx = targetIdx + 1;
-          targetEl = ttsSpeechItems[targetIdx].element;
         }
       }
 
@@ -1146,16 +1133,10 @@
 
       if (ttsSpeechItems.length === 0) {
         ttsSpeechItems = [];
-        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
-
+        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-verse-card');
         allReaderElements.forEach(function(el) {
-          if (el.classList.contains('bible-chapter-header')) {
-            var chText = el.innerText.replace('📖 ', '').trim();
-            ttsSpeechItems.push({ element: el, speakText: chText });
-          } else if (el.classList.contains('bible-verse-card')) {
-            var vPureText = el.getAttribute('data-puretext') || el.innerText;
-            ttsSpeechItems.push({ element: el, speakText: vPureText });
-          }
+          var vPureText = el.getAttribute('data-puretext') || el.innerText;
+          ttsSpeechItems.push({ element: el, speakText: vPureText });
         });
       }
 
@@ -1565,37 +1546,6 @@
           var chHeader = document.createElement('div');
           chHeader.className = 'bible-chapter-header';
           chHeader.innerText = '📖 ' + bookName + ' ' + c + '장';
-          chHeader.setAttribute('data-chtitle', bookName + ' ' + c + '장');
-
-          var chTouchStartY = 0;
-          var isChTouchScrolling = false;
-
-          chHeader.addEventListener('touchstart', function(e) {
-            isChTouchScrolling = false;
-            if (e.touches && e.touches[0]) {
-              chTouchStartY = e.touches[0].clientY;
-            }
-          }, { passive: true });
-
-          chHeader.addEventListener('touchmove', function(e) {
-            if (e.touches && e.touches[0]) {
-              var deltaY = Math.abs(e.touches[0].clientY - chTouchStartY);
-              if (deltaY > 8) {
-                isChTouchScrolling = true;
-              }
-            }
-          }, { passive: true });
-
-          chHeader.addEventListener('touchend', function(e) {
-            if (isChTouchScrolling) return;
-            handleVerseElementTouch(chHeader);
-          });
-
-          chHeader.addEventListener('click', function(e) {
-            if (isChTouchScrolling) return;
-            handleVerseElementTouch(chHeader);
-          });
-
           container.appendChild(chHeader);
 
           verses.forEach(function(vText, idx) {
