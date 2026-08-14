@@ -637,7 +637,7 @@
 <script src="bible_Zechariah.js"></script>
 <script src="bible_Zephaniah.js"></script>
 
-  <script src="bible_db_66.js" defer></script>
+  <script src="bible_db_66.js"></script>
 </head>
 <body>
 
@@ -2086,9 +2086,14 @@
         return;
       }
 
-      var db = window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_FULL_DB || {};
-      if (currentBibleVersion === 'KH') db = window.BIBLE_FULL_DB_KH || window.BIBLE_66_DB_KH || window.BIBLE_FULL_DB || {};
-      if (currentBibleVersion === 'SB') db = window.BIBLE_FULL_DB_SB || window.BIBLE_66_DB_SB || window.BIBLE_FULL_DB || {};
+      var db = {};
+      if (currentBibleVersion === 'KH') {
+        db = window.BIBLE_66_DB_KH || window.BIBLE_FULL_DB_KH || window.BIBLE_FULL_DB || {};
+      } else if (currentBibleVersion === 'SB') {
+        db = window.BIBLE_66_DB_SB || window.BIBLE_FULL_DB_SB || window.BIBLE_FULL_DB || {};
+      } else {
+        db = window.BIBLE_66_DB_KG || window.BIBLE_FULL_DB_KG || window.BIBLE_FULL_DB || {};
+      }
 
       (item.books || []).forEach(function(bInfo) {
         var bookName = bInfo.book;
