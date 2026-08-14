@@ -131,7 +131,7 @@
 
     /* CLEAN 2-LINE FORMATTED GESTURE TIP BOX */
     .gesture-tip-box {
-      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 14px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: left; line-height: 1.5;
+      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 12px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: center; line-height: 1.5;
     }
 
     .daily-reading-banner {
@@ -457,6 +457,52 @@
       text-align: center;
       margin-top: 6px;
     }
+  
+    /* ONLY MEMO MULTILINE WRAPPING & CONTAINMENT CSS */
+    .note-indicator {
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: rgba(255, 153, 0, 0.1);
+      border: 1px dashed var(--accent-gold);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .note-indicator > div {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    .note-text-content {
+      display: inline;
+      word-break: break-word;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    .verse-note-textarea {
+      width: 100%;
+      box-sizing: border-box;
+      word-break: break-word;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      min-height: 75px;
+      resize: vertical;
+    }
+
   </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
@@ -570,8 +616,8 @@
 
       <!-- CLEAN 2-LINE FORMATTED GESTURE TIP BOX -->
       <div class="gesture-tip-box" id="readerTipBox">
-        💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>
-        💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)
+        💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>
+        💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모
       </div>
 
       <div id="bibleTextContainer"></div>
@@ -713,18 +759,7 @@
         try {
           var parsed = JSON.parse(saved);
           journals = parsed.journals || {};
-          var rawNotes = parsed.verseNotes || {};
-          verseNotes = {};
-          for (var k in rawNotes) {
-            if (rawNotes.hasOwnProperty(k)) {
-              var v = rawNotes[k];
-              if (typeof v === 'object' && v !== null) {
-                verseNotes[k] = (v.noteText || v.note || '').toString();
-              } else {
-                verseNotes[k] = (v || '').toString();
-              }
-            }
-          }
+          verseNotes = parsed.verseNotes || {};
           dataLoaded = true;
         } catch(e) {}
       }
@@ -1265,12 +1300,12 @@
       }
       if (tip) {
         if (item.zoomInfo) {
-          tip.innerHTML = '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
-            '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
+          tip.innerHTML = '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
+            '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
             '<span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
         } else {
-          tip.innerHTML = '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
-            '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)';
+          tip.innerHTML = '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
+            '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모';
         }
       }
     }
@@ -1498,7 +1533,9 @@
         return;
       }
 
-      var db = getBibleDatabase();
+      var db = window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_FULL_DB || {};
+      if (currentBibleVersion === 'KH') db = window.BIBLE_FULL_DB_KH || window.BIBLE_66_DB_KH || window.BIBLE_FULL_DB || {};
+      if (currentBibleVersion === 'SB') db = window.BIBLE_FULL_DB_SB || window.BIBLE_66_DB_SB || window.BIBLE_FULL_DB || {};
 
       (item.books || []).forEach(function(bInfo) {
         var bookName = bInfo.book;
