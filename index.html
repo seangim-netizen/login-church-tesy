@@ -1507,7 +1507,8 @@
             var vNum = (idx + 1);
             var verseKey = bookName + '_' + c + '_' + vNum;
             var formattedCopyStr = '[' + bookName + ' ' + c + ':' + vNum + '] ' + vText;
-            var savedNote = verseNotes[verseKey] || '';
+            var savedNoteRaw = verseNotes[verseKey] || '';
+            var savedNote = (typeof savedNoteRaw === 'object' && savedNoteRaw !== null) ? (savedNoteRaw.noteText || savedNoteRaw.note || '').toString() : savedNoteRaw.toString();
 
             var itemEl = document.createElement('div');
             itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
