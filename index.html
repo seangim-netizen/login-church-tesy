@@ -984,19 +984,17 @@
 
     // TOUCH VERSE HANDLER
     function handleVerseElementTouch(targetEl) {
-      if (ttsSpeechItems.length === 0) {
-        ttsSpeechItems = [];
-        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
-        allReaderElements.forEach(function(el) {
-          if (el.classList.contains('bible-chapter-header')) {
-            var chText = el.innerText.replace('📖 ', '').trim();
-            ttsSpeechItems.push({ element: el, speakText: chText });
-          } else if (el.classList.contains('bible-verse-card')) {
-            var vPureText = el.getAttribute('data-puretext') || el.innerText;
-            ttsSpeechItems.push({ element: el, speakText: vPureText });
-          }
-        });
-      }
+      ttsSpeechItems = [];
+      var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
+      allReaderElements.forEach(function(el) {
+        if (el.classList.contains('bible-chapter-header')) {
+          var chText = el.innerText.replace('📖 ', '').trim();
+          ttsSpeechItems.push({ element: el, speakText: chText });
+        } else if (el.classList.contains('bible-verse-card')) {
+          var vPureText = el.getAttribute('data-puretext') || el.innerText;
+          ttsSpeechItems.push({ element: el, speakText: vPureText });
+        }
+      });
 
       var targetIdx = -1;
       for (var i = 0; i < ttsSpeechItems.length; i++) {
@@ -1006,25 +1004,33 @@
         }
       }
 
+      // If user tapped a chapter header (e.g. "📖 출애굽기 2장"), move starting target directly to 2장 1절!
+      if (targetIdx !== -1 && targetEl.classList.contains('bible-chapter-header')) {
+        if (targetIdx + 1 < ttsSpeechItems.length && ttsSpeechItems[targetIdx + 1].element.classList.contains('bible-verse-card')) {
+          targetIdx = targetIdx + 1;
+          targetEl = ttsSpeechItems[targetIdx].element;
+        }
+      }
+
       if (targetIdx !== -1) {
         selectedCursorVerseIndex = targetIdx;
         currentTTSIndex = targetIdx;
+        isTTSPaused = false;
 
         document.querySelectorAll('.selected-cursor-verse').forEach(function(el) {
           el.classList.remove('selected-cursor-verse');
         });
         targetEl.classList.add('selected-cursor-verse');
 
-        // If audio is ALREADY playing, switch position smoothly!
+        var vNum = targetEl.getAttribute('data-vnum');
+        var labelText = vNum ? (vNum + '절') : (targetEl.innerText || '').trim();
+
         if (isTTSSpeaking) {
           if ('speechSynthesis' in window) {
             try { window.speechSynthesis.cancel(); } catch(e) {}
           }
           speakNextVerseTTS();
         } else {
-          // If audio is NOT playing, set starting position WITHOUT auto-playing!
-          var vNum = targetEl.getAttribute('data-vnum');
-          var labelText = vNum ? (vNum + '절') : (targetEl.innerText || '').trim();
           showToast(labelText + '이(가) 시작 위치로 지정되었습니다. [낭독] 버튼을 누르면 재생됩니다.');
         }
       }
@@ -1158,9 +1164,7 @@
         return;
       }
 
-      if (!isTTSPaused) {
-        currentTTSIndex = selectedCursorVerseIndex;
-      }
+      currentTTSIndex = selectedCursorVerseIndex;
 
       isTTSSpeaking = true;
       isTTSPaused = false;
