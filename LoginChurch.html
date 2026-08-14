@@ -1845,14 +1845,10 @@
       });
 
       if (verseQuotesList.length > 0) {
-        journals[dayKey].grace = verseQuotesList.join('
-
-');
+        journals[dayKey].grace = verseQuotesList.join('\n\n');
       }
       if (verseNotesList.length > 0) {
-        journals[dayKey].lesson = verseNotesList.join('
-
-');
+        journals[dayKey].lesson = verseNotesList.join('\n\n');
       }
 
       saveJournals();
