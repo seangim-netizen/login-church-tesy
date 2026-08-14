@@ -885,6 +885,233 @@
     }
 
     // IMPERATIVE IMMEDIATE PAUSE & STOP METHOD
+    // REAL MP3 HTML5 AUDIO ENGINE FOR 100% SCREEN-OFF & BACKGROUND PLAYBACK ON IOS & ANDROID
+    var realAudioPlayer = new Audio();
+    realAudioPlayer.preload = 'auto';
+
+    function stopTTSAudio(isFullReset) {
+      try { realAudioPlayer.pause(); } catch(e) {}
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+      }
+
+      if (isFullReset) {
+        isTTSSpeaking = false;
+        isTTSPaused = false;
+        ttsSpeechItems = [];
+        currentTTSIndex = 0;
+      } else {
+        isTTSSpeaking = false;
+        isTTSPaused = true;
+      }
+
+      document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
+        el.classList.remove('is-reading-speaking');
+      });
+
+      var playerPopup = document.getElementById('audioPlayerPopup');
+      if (playerPopup) playerPopup.classList.remove('show');
+      updatePlayerControlsUI();
+    }
+
+    function startTTSAudio() {
+      if (isTTSSpeaking) {
+        stopTTSAudio(false);
+        showToast('낭독을 일시정지했습니다.');
+        return;
+      }
+
+      if (ttsSpeechItems.length === 0) {
+        ttsSpeechItems = [];
+        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
+
+        allReaderElements.forEach(function(el) {
+          if (el.classList.contains('bible-chapter-header')) {
+            var chText = el.innerText.replace('📖 ', '').trim();
+            ttsSpeechItems.push({ element: el, speakText: chText });
+          } else if (el.classList.contains('bible-verse-card')) {
+            var vPureText = el.getAttribute('data-puretext') || el.innerText;
+            ttsSpeechItems.push({ element: el, speakText: vPureText });
+          }
+        });
+      }
+
+      if (ttsSpeechItems.length === 0) {
+        showToast('낭독할 성경 본문이 없습니다.');
+        return;
+      }
+
+      if (!isTTSPaused) {
+        currentTTSIndex = selectedCursorVerseIndex;
+      }
+
+      isTTSSpeaking = true;
+      isTTSPaused = false;
+
+      if ('wakeLock' in navigator) {
+        try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
+      }
+
+      var rate = ttsSpeedRates[currentTTSSpeedIndex];
+      if (currentTTSIndex > 0) {
+        showToast('선택하신 구절부터 음성 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
+      } else {
+        showToast('성경 본문 음성 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
+      }
+      updatePlayerControlsUI();
+      speakNextVerseTTS();
+    }
+
+    function speakNextVerseTTS() {
+      if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
+        var wasSpeaking = isTTSSpeaking;
+        stopTTSAudio(true);
+        if (wasSpeaking && currentTTSIndex >= ttsSpeechItems.length) {
+          showToast('오늘의 말씀을 모두 낭독했습니다!');
+        }
+        return;
+      }
+
+      var itemObj = ttsSpeechItems[currentTTSIndex];
+
+      document.querySelectorAll('.is-reading-speaking, .selected-cursor-verse').forEach(function(el) {
+        el.classList.remove('is-reading-speaking');
+        el.classList.remove('selected-cursor-verse');
+      });
+
+      if (itemObj && itemObj.element) {
+        itemObj.element.classList.add('is-reading-speaking');
+        itemObj.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      updatePlayerControlsUI();
+
+      var speakText = itemObj.speakText;
+
+      // Lock Screen & Control Center Metadata
+      if ('mediaSession' in navigator) {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: speakText.length > 35 ? speakText.substring(0, 35) + '...' : speakText,
+            artist: 'LoginChurch 성경통독일기장',
+            album: '📖 성경 통독 낭독 중',
+            artwork: [
+              { src: 'app_logo.png', sizes: '512x512', type: 'image/png' },
+              { src: 'header_logo.png', sizes: '512x512', type: 'image/png' }
+            ]
+          });
+
+          navigator.mediaSession.setActionHandler('play', function() {
+            if (!isTTSSpeaking) startTTSAudio();
+          });
+          navigator.mediaSession.setActionHandler('pause', function() {
+            stopTTSAudio(false);
+          });
+          navigator.mediaSession.setActionHandler('previoustrack', function() {
+            playPrevTTSVerse();
+          });
+          navigator.mediaSession.setActionHandler('nexttrack', function() {
+            playNextTTSVerse();
+          });
+        } catch(e) {}
+      }
+
+      // Real MP3 Audio Playback (Keeps playing on Screen Off & Background on iOS/Android!)
+      var encodedText = encodeURIComponent(speakText);
+      var mp3Url = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodedText + '&tl=ko&client=tw-ob';
+
+      var hasStepEnded = false;
+
+      realAudioPlayer.src = mp3Url;
+      realAudioPlayer.playbackRate = ttsSpeedRates[currentTTSSpeedIndex] || 1.0;
+
+      realAudioPlayer.onended = function() {
+        if (!isTTSSpeaking || hasStepEnded) return;
+        hasStepEnded = true;
+        currentTTSIndex++;
+        selectedCursorVerseIndex = currentTTSIndex;
+        speakNextVerseTTS();
+      };
+
+      realAudioPlayer.onerror = function() {
+        if (!isTTSSpeaking || hasStepEnded) return;
+        hasStepEnded = true;
+        speakWithWebSpeechFallback(speakText);
+      };
+
+      realAudioPlayer.play().catch(function(err) {
+        if (!isTTSSpeaking || hasStepEnded) return;
+        speakWithWebSpeechFallback(speakText);
+      });
+    }
+
+    function speakWithWebSpeechFallback(speakText) {
+      if (!('speechSynthesis' in window)) return;
+      try { window.speechSynthesis.cancel(); } catch(e) {}
+      var utterance = new SpeechSynthesisUtterance(speakText);
+      utterance.lang = 'ko-KR';
+      utterance.rate = ttsSpeedRates[currentTTSSpeedIndex] || 1.0;
+      utterance.onend = function() {
+        if (!isTTSSpeaking) return;
+        currentTTSIndex++;
+        selectedCursorVerseIndex = currentTTSIndex;
+        speakNextVerseTTS();
+      };
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function updatePlayerControlsUI() {
+      var playerPopup = document.getElementById('audioPlayerPopup');
+      var pInfo = document.getElementById('playerCurrentVerseInfo');
+      var pPlayBtn = document.getElementById('btnPlayerPlayPause');
+      var pSpeedBtn = document.getElementById('btnPlayerSpeed');
+      var ttsHeaderBtnText = document.getElementById('ttsBtnText');
+      var ttsHeaderBtn = document.getElementById('btnAudioTTSPlay');
+
+      if (!playerPopup) return;
+
+      if (isTTSSpeaking || isTTSPaused) {
+        playerPopup.classList.add('show');
+      }
+
+      var rate = ttsSpeedRates[currentTTSSpeedIndex];
+      if (pSpeedBtn) pSpeedBtn.innerText = rate.toFixed(1) + '배속';
+
+      if (isTTSSpeaking) {
+        if (pPlayBtn) pPlayBtn.innerText = '⏸ 정지';
+        if (ttsHeaderBtnText) ttsHeaderBtnText.innerText = '중지';
+        if (ttsHeaderBtn) {
+          ttsHeaderBtn.style.borderColor = 'var(--accent-gold)';
+          ttsHeaderBtn.style.color = 'var(--accent-gold)';
+        }
+      } else {
+        if (pPlayBtn) pPlayBtn.innerText = '▶ 재생';
+        if (ttsHeaderBtnText) ttsHeaderBtnText.innerText = isTTSPaused ? '재생' : '낭독';
+        if (ttsHeaderBtn) {
+          ttsHeaderBtn.style.borderColor = 'var(--accent-green)';
+          ttsHeaderBtn.style.color = 'var(--accent-green)';
+        }
+      }
+
+      var activeIdx = isTTSSpeaking ? currentTTSIndex : selectedCursorVerseIndex;
+
+      if (ttsSpeechItems[activeIdx]) {
+        var itemObj = ttsSpeechItems[activeIdx];
+        var infoStr = '낭독 준비';
+        if (itemObj.element) {
+          if (itemObj.element.classList.contains('bible-chapter-header')) {
+            infoStr = itemObj.element.innerText.replace('📖 ', '').trim();
+          } else {
+            var vNum = itemObj.element.getAttribute('data-vnum');
+            var itemPassage = (scheduleData[activeDay] || {}).passage || '';
+            infoStr = itemPassage.split(' ')[0] + ' ' + vNum + '절' + (isTTSSpeaking ? ' 낭독 중' : ' 선택됨');
+          }
+        }
+        if (pInfo) pInfo.innerText = infoStr;
+      }
+    }
+
+    // IMPERATIVE IMMEDIATE PAUSE & STOP METHOD
     function stopTTSAudio(isFullReset) {
       var bgAudio = document.getElementById('bgSilentAudio');
       if (bgAudio) {
