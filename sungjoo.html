@@ -1285,33 +1285,31 @@
 
       if (targetIdx !== -1) {
         selectedCursorVerseIndex = targetIdx;
+        currentTTSIndex = targetIdx;
 
         document.querySelectorAll('.selected-cursor-verse').forEach(function(el) {
           el.classList.remove('selected-cursor-verse');
         });
+        targetEl.classList.add('selected-cursor-verse');
 
-        if (isTTSSpeaking) {
-          isTTSSpeaking = false;
-          if ('speechSynthesis' in window) {
-            try { window.speechSynthesis.cancel(); } catch(e) {}
-          }
-
-          currentTTSIndex = targetIdx;
-          isTTSSpeaking = true;
-          isTTSPaused = false;
-
-          var vNum = targetEl.getAttribute('data-vnum');
-          showToast(vNum ? (vNum + '절부터 낭독합니다.') : '선택한 구절부터 낭독합니다.');
-          enableBackgroundAudioSession();
-          updatePlayerControlsUI();
-          speakNextVerseTTS();
-        } 
-        else {
-          targetEl.classList.add('selected-cursor-verse');
-          var vNum2 = targetEl.getAttribute('data-vnum');
-          showToast(vNum2 ? (vNum2 + '절 선택 완료 (낭독 버튼을 누르면 이 구절부터 낭독합니다)') : '구절 선택 완료');
-          updatePlayerControlsUI();
+        // Immediately start reading from touched verse!
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch(e) {}
         }
+        isTTSSpeaking = true;
+        isTTSPaused = false;
+
+        var bgAudio = document.getElementById('bgSilentAudio');
+        if (bgAudio) {
+          try { bgAudio.play().catch(function(e){}); } catch(e) {}
+        }
+
+        if ('wakeLock' in navigator) {
+          try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
+        }
+
+        updatePlayerControlsUI();
+        speakNextVerseTTS();
       }
     }
 
@@ -2362,6 +2360,20 @@
     renderSchedule();
   });
   window.onload = function() { renderBible(scheduleData[activeDay] || scheduleData[1], true); };
+  
+    // Keep Audio Playing when Hiding App or Switching to Other Apps
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden && isTTSSpeaking) {
+        var bgAudio = document.getElementById('bgSilentAudio');
+        if (bgAudio) {
+          try { bgAudio.play().catch(function(e){}); } catch(e) {}
+        }
+        if ('speechSynthesis' in window && window.speechSynthesis.paused) {
+          try { window.speechSynthesis.resume(); } catch(e) {}
+        }
+      }
+    });
+
   </script>
 </body>
 </html>
