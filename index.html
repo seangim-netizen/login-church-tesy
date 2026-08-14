@@ -173,8 +173,38 @@
     
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; pointer-events: none; }
 
-    .note-indicator {
-      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 8px 10px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; line-height: 1.5; white-space: pre-wrap;
+        .note-indicator {
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: rgba(255, 153, 0, 0.1);
+      border: 1px dashed var(--accent-gold);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+      word-break: break-word;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .note-text-content {
+      display: inline-block;
+      width: 100%;
+      word-break: break-word;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
+    }
+    .verse-note-textarea {
+      width: 100%;
+      box-sizing: border-box;
+      word-break: break-word;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .btn-copy-note {
@@ -950,23 +980,17 @@
         targetEl.classList.add('selected-cursor-verse');
 
         // Immediately start reading from touched verse!
-        if ('speechSynthesis' in window) {
-          try { window.speechSynthesis.cancel(); } catch(e) {}
+        if (isTTSSpeaking) {
+          if ('speechSynthesis' in window) {
+            try { window.speechSynthesis.cancel(); } catch(e) {}
+          }
+          speakNextVerseTTS();
+        } else {
+          var vNum = targetEl.getAttribute('data-vnum');
+          if (vNum) {
+            showToast(vNum + '절이 시작 구절로 지정되었습니다. 낭독 버튼을 누르시면 재생됩니다.');
+          }
         }
-        isTTSSpeaking = true;
-        isTTSPaused = false;
-
-        var bgAudio = document.getElementById('bgSilentAudio');
-        if (bgAudio) {
-          try { bgAudio.play().catch(function(e){}); } catch(e) {}
-        }
-
-        if ('wakeLock' in navigator) {
-          try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
-        }
-
-        updatePlayerControlsUI();
-        speakNextVerseTTS();
       }
     }
 
