@@ -1962,7 +1962,14 @@
         showToast('은혜받은 말씀에 작성된 내용이 없습니다.');
         return;
       }
-      copyTextToClipboard(val, '은혜받은 말씀 구절이 복사되었습니다!');
+      if (el) {
+        try {
+          el.focus();
+          el.select();
+          el.setSelectionRange(0, 999999);
+        } catch(e){}
+      }
+      copyTextToClipboard(val, '은혜받은 말씀이 복사되었습니다!');
     }
 
     function copyLessonTextOnly() {
@@ -1971,6 +1978,13 @@
       if (!val) {
         showToast('받은 교훈 및 적용에 작성된 내용이 없습니다.');
         return;
+      }
+      if (el) {
+        try {
+          el.focus();
+          el.select();
+          el.setSelectionRange(0, 999999);
+        } catch(e){}
       }
       copyTextToClipboard(val, '받은 교훈 및 적용 묵상이 복사되었습니다!');
     }
