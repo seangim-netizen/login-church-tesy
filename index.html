@@ -461,7 +461,25 @@
       text-align: left;
       margin-top: 6px;
     }
-  </style>
+  
+    .journal-grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .journal-grid-container .journal-box {
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .journal-grid-container textarea {
+      flex: 1;
+      min-height: 220px;
+    }
+
+</style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
 <script src="bible_1John.js"></script>
@@ -593,19 +611,21 @@
       <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
         ✏️ 통독 일기 작성
       </div>
-      <div class="journal-box">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-          <div class="journal-box-title" style="margin-bottom: 0;">📖 은혜받은 말씀</div>
-          <button class="btn-copy-note" onclick="copyGraceToClipboard()">📋 구절 복사</button>
+      <div class="journal-grid-container">
+        <div class="journal-box">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.95rem;">📖 은혜받은 말씀</div>
+            <button class="btn-copy-note" onclick="copyGraceToClipboard()">📋 구절 복사</button>
+          </div>
+          <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
         </div>
-        <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
-      </div>
-      <div class="journal-box">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-          <div class="journal-box-title" style="margin-bottom: 0;">💡 받은 교훈 및 적용</div>
-          <button class="btn-copy-note" onclick="copyLessonToClipboard()">📋 묵상 복사</button>
+        <div class="journal-box">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.95rem;">💡 받은 교훈 및 적용</div>
+            <button class="btn-copy-note" onclick="copyLessonToClipboard()">📋 묵상 복사</button>
+          </div>
+          <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
         </div>
-        <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
       </div>
       <div style="margin-top: 8px; margin-bottom: 24px;">
         <button class="btn-copy-note" onclick="copyFullJournalToClipboard()" style="width: 100%; padding: 12px; font-size: 0.95rem; background: var(--accent-green); color: #ffffff; border: none; border-radius: 10px;">
