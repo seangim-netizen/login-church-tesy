@@ -637,7 +637,7 @@
 <script src="bible_Zechariah.js"></script>
 <script src="bible_Zephaniah.js"></script>
 
-  <script src="bible_db_66.js"></script>
+  <script src="bible_db_66.js?v=20260814_1015"></script>
 </head>
 <body>
 
@@ -2105,7 +2105,7 @@
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
                 '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
                 '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
-                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">저장 완료</button>' +
+                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '" onclick="event.stopPropagation(); saveNoteInside(\'' + verseKey + '\');">저장 완료</button>' +
               '</div>';
 
             var pressTimer = null;
