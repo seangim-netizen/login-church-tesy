@@ -1565,6 +1565,37 @@
           var chHeader = document.createElement('div');
           chHeader.className = 'bible-chapter-header';
           chHeader.innerText = '📖 ' + bookName + ' ' + c + '장';
+          chHeader.setAttribute('data-chtitle', bookName + ' ' + c + '장');
+
+          var chTouchStartY = 0;
+          var isChTouchScrolling = false;
+
+          chHeader.addEventListener('touchstart', function(e) {
+            isChTouchScrolling = false;
+            if (e.touches && e.touches[0]) {
+              chTouchStartY = e.touches[0].clientY;
+            }
+          }, { passive: true });
+
+          chHeader.addEventListener('touchmove', function(e) {
+            if (e.touches && e.touches[0]) {
+              var deltaY = Math.abs(e.touches[0].clientY - chTouchStartY);
+              if (deltaY > 8) {
+                isChTouchScrolling = true;
+              }
+            }
+          }, { passive: true });
+
+          chHeader.addEventListener('touchend', function(e) {
+            if (isChTouchScrolling) return;
+            handleVerseElementTouch(chHeader);
+          });
+
+          chHeader.addEventListener('click', function(e) {
+            if (isChTouchScrolling) return;
+            handleVerseElementTouch(chHeader);
+          });
+
           container.appendChild(chHeader);
 
           verses.forEach(function(vText, idx) {
