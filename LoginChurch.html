@@ -131,7 +131,7 @@
 
     /* CLEAN 2-LINE FORMATTED GESTURE TIP BOX */
     .gesture-tip-box {
-      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 12px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: center; line-height: 1.5;
+      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 12px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: left; line-height: 1.5;
     }
 
     .daily-reading-banner {
@@ -198,7 +198,7 @@
     }
     .btn-save-note-inside:active { opacity: 0.8; }
 
-    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: center; margin-top: 18px; margin-bottom: 35px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
+    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: left; margin-top: 18px; margin-bottom: 35px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
     .btn-complete { width: 100%; padding: 16px; font-size: 1.15rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
@@ -454,7 +454,7 @@
       font-weight: 800;
       font-size: 0.95rem;
       cursor: pointer;
-      text-align: center;
+      text-align: left;
       margin-top: 6px;
     }
   </style>
@@ -1790,37 +1790,112 @@
       }
     }
 
-    function autoSaveActiveNote() {
-      if (activeOpenNoteKey) {
-        var vk = activeOpenNoteKey;
-        var box = document.getElementById('box_note_' + vk);
-        var ind = document.getElementById('ind_note_' + vk);
-        var ta = document.getElementById('ta_note_' + vk);
+    function syncVerseNotesToJournalForDay(dayNum) {
+      if (!dayNum) dayNum = activeDay;
+      var item = scheduleData[dayNum];
+      if (!item || !item.books) return;
 
-        if (ta) {
-          var val = ta.value.trim();
-          verseNotes[vk] = val;
-          saveJournals();
+      var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+      var dayKey = 'day_' + dayNum;
+      if (!journals[dayKey]) journals[dayKey] = {};
 
-          if (box) box.style.display = 'none';
+      var verseQuotesList = [];
+      var verseNotesList = [];
 
-          if (ind) {
-            if (val.length > 0) {
-              ind.style.display = 'flex';
-              var txtSpan = ind.querySelector('.note-text-content');
-              if (txtSpan) txtSpan.innerText = val;
-            } else {
-              ind.style.display = 'none';
+      // Scan all verses in today's reading
+      (item.books || []).forEach(function(bInfo) {
+        var bookName = bInfo.book;
+        for (var c = bInfo.start; c <= bInfo.end; c++) {
+          // Check for all verse cards rendered or in verseNotes DB
+          var prefix = bookName + '_' + c + '_';
+          Object.keys(verseNotes).forEach(function(vk) {
+            if (vk.indexOf(prefix) === 0) {
+              var nData = verseNotes[vk];
+              var noteText = (typeof nData === 'object' && nData !== null) ? (nData.noteText || '') : (nData || '');
+              if (noteText.trim().length > 0) {
+                var vParts = vk.split('_');
+                var vNum = vParts[2] || '';
+                var verName = (typeof nData === 'object' && nData && nData.verName) ? nData.verName : currentVerName;
+                var pureText = (typeof nData === 'object' && nData && nData.pureText) ? nData.pureText : '';
+
+                // Try DOM text if pureText missing
+                if (!pureText) {
+                  var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
+                  if (domCard) pureText = domCard.getAttribute('data-puretext') || domCard.innerText;
+                }
+
+                var verseRefHeader = '[' + bookName + ' ' + c + ':' + vNum + ' ' + verName + ']';
+                var fullVerseQuote = verseRefHeader + (pureText ? ' ' + pureText : '');
+                var fullLessonNote = '[' + bookName + ' ' + c + ':' + vNum + ' 묵상] ' + noteText.trim();
+
+                if (verseQuotesList.indexOf(fullVerseQuote) === -1) {
+                  verseQuotesList.push(fullVerseQuote);
+                }
+                if (verseNotesList.indexOf(fullLessonNote) === -1) {
+                  verseNotesList.push(fullLessonNote);
+                }
+              }
             }
-          }
+          });
+        }
+      });
 
-          var card = box ? box.parentElement : null;
-          if (card) {
-            if (val.length > 0) card.classList.add('has-note-card');
-            else card.classList.remove('has-note-card');
+      if (verseQuotesList.length > 0) {
+        journals[dayKey].grace = verseQuotesList.join('
+
+');
+      }
+      if (verseNotesList.length > 0) {
+        journals[dayKey].lesson = verseNotesList.join('
+
+');
+      }
+
+      saveJournals();
+
+      // Update textareas if current tab is journal editor
+      var eg = document.getElementById('editorGrace');
+      var el = document.getElementById('editorLesson');
+      if (eg && journals[dayKey].grace) eg.value = journals[dayKey].grace;
+      if (el && journals[dayKey].lesson) el.value = journals[dayKey].lesson;
+    }
+
+    function autoSaveActiveNote() {
+      if (!activeOpenNoteKey) return;
+      var ta = document.getElementById('ta_note_' + activeOpenNoteKey);
+      if (ta) {
+        var vk = activeOpenNoteKey;
+        var val = ta.value.trim();
+        var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+
+        var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
+        var pureText = domCard ? (domCard.getAttribute('data-puretext') || '') : '';
+
+        if (val.length === 0) {
+          delete verseNotes[vk];
+        } else {
+          verseNotes[vk] = {
+            noteText: val,
+            verName: currentVerName,
+            pureText: pureText,
+            day: activeDay
+          };
+        }
+        saveJournals();
+
+        var ind = document.getElementById('ind_note_' + vk);
+        if (ind) {
+          var txtSpan = ind.querySelector('.note-text-content');
+          if (val.length > 0) {
+            if (txtSpan) txtSpan.innerText = val;
+            ind.style.display = 'flex';
+          } else {
+            ind.style.display = 'none';
           }
         }
-        activeOpenNoteKey = null;
+
+        // Sync with Journal Tab automatically
+        syncVerseNotesToJournalForDay(activeDay);
       }
     }
 
