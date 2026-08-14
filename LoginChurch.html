@@ -457,24 +457,6 @@
       text-align: center;
       margin-top: 6px;
     }
-  
-    .btn-copy-journal-box {
-      padding: 4px 10px;
-      font-size: 0.78rem;
-      font-weight: bold;
-      background: transparent;
-      color: var(--accent-gold);
-      border: 1px solid var(--accent-gold);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-    .btn-copy-journal-box:hover {
-      background: var(--accent-gold);
-      color: #121824;
-    }
-
   </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
@@ -1396,63 +1378,19 @@
       }
     }
 
-    // CLEAN SAFE CLIPBOARD COPY ENGINE
     function copyTextToClipboard(text, msg) {
-      if (!text) return;
-      var successMessage = msg || '복사되었습니다!';
-
-      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-        navigator.clipboard.writeText(text).then(function() {
-          showToast(successMessage);
-        }).catch(function() {
-          executeFallbackCopy(text, successMessage);
-        });
-        return;
-      }
-      executeFallbackCopy(text, successMessage);
-    }
-
-    function executeFallbackCopy(text, msg) {
-      try {
-        var dummy = document.createElement('textarea');
-        dummy.value = text;
-        dummy.setAttribute('readonly', '');
-        dummy.style.position = 'fixed';
-        dummy.style.top = '0';
-        dummy.style.left = '-9999px';
-        dummy.style.fontSize = '12pt';
-        document.body.appendChild(dummy);
-
-        dummy.select();
-        dummy.setSelectionRange(0, 999999);
-
-        var successful = document.execCommand('copy');
-        document.body.removeChild(dummy);
-
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
         showToast(msg || '복사되었습니다!');
-      } catch (err) {
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
         showToast(msg || '복사되었습니다!');
       }
-    }
-
-    function copyGraceTextOnly() {
-      var el = document.getElementById('editorGrace');
-      var val = el ? el.value.trim() : '';
-      if (!val) {
-        showToast('은혜받은 말씀에 작성된 내용이 없습니다.');
-        return;
-      }
-      copyTextToClipboard(val, '은혜받은 말씀이 복사되었습니다!');
-    }
-
-    function copyLessonTextOnly() {
-      var el = document.getElementById('editorLesson');
-      var val = el ? el.value.trim() : '';
-      if (!val) {
-        showToast('받은 교훈 및 적용에 작성된 내용이 없습니다.');
-        return;
-      }
-      copyTextToClipboard(val, '받은 교훈 및 적용 묵상이 복사되었습니다!');
     }
 
     function autoSaveActiveNote() {
