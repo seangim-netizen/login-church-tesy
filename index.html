@@ -131,7 +131,7 @@
 
     /* CLEAN 2-LINE FORMATTED GESTURE TIP BOX */
     .gesture-tip-box {
-      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 12px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: center; line-height: 1.5;
+      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 14px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: left; line-height: 1.5;
     }
 
     .daily-reading-banner {
@@ -631,8 +631,8 @@
 
       <!-- CLEAN 2-LINE FORMATTED GESTURE TIP BOX -->
       <div class="gesture-tip-box" id="readerTipBox">
-        💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>
-        💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모
+        💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>
+        💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)
       </div>
 
       <div id="bibleTextContainer"></div>
@@ -1015,24 +1015,18 @@
         });
         targetEl.classList.add('selected-cursor-verse');
 
-        // Immediately start reading from touched verse!
-        if ('speechSynthesis' in window) {
-          try { window.speechSynthesis.cancel(); } catch(e) {}
+        // If audio is ALREADY playing, switch position smoothly!
+        if (isTTSSpeaking) {
+          if ('speechSynthesis' in window) {
+            try { window.speechSynthesis.cancel(); } catch(e) {}
+          }
+          speakNextVerseTTS();
+        } else {
+          // If audio is NOT playing, set starting position WITHOUT auto-playing!
+          var vNum = targetEl.getAttribute('data-vnum');
+          var labelText = vNum ? (vNum + '절') : (targetEl.innerText || '').trim();
+          showToast(labelText + '이(가) 시작 위치로 지정되었습니다. [낭독] 버튼을 누르면 재생됩니다.');
         }
-        isTTSSpeaking = true;
-        isTTSPaused = false;
-
-        var bgAudio = document.getElementById('bgSilentAudio');
-        if (bgAudio) {
-          try { bgAudio.play().catch(function(e){}); } catch(e) {}
-        }
-
-        if ('wakeLock' in navigator) {
-          try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
-        }
-
-        updatePlayerControlsUI();
-        speakNextVerseTTS();
       }
     }
 
@@ -1321,12 +1315,12 @@
       }
       if (tip) {
         if (item.zoomInfo) {
-          tip.innerHTML = '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
-            '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
+          tip.innerHTML = '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
+            '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
             '<span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
         } else {
-          tip.innerHTML = '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
-            '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모';
+          tip.innerHTML = '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
+            '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)';
         }
       }
     }
