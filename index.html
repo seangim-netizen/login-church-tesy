@@ -2122,15 +2122,18 @@
             itemEl.setAttribute('data-lasttap', '0');
             var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
+            var noteStr = getVerseNoteText(verseKey);
+            var displayIndStyle = (noteStr.length > 0) ? 'display: flex;' : 'display: none;';
+
             itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
               '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
-                '<div style="flex:1;">📝 <span class="note-text-content">' + savedNote + '</span></div>' +
-                '<button class="btn-copy-note" id="btncopy_' + verseKey + '">메모 복사</button>' +
+                '<div style="flex:1;">📝 <span class="note-text-content">' + noteStr + '</span></div>' +
+                '<button class="btn-copy-note" data-vkey="' + verseKey + '">메모 복사</button>' +
               '</div>' +
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
                 '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
-                '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
-                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">저장 완료</button>' +
+                '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + noteStr + '</textarea>' +
+                '<button class="btn-save-note-inside" data-vkey="' + verseKey + '">저장 완료</button>' +
               '</div>';
 
             var pressTimer = null;
@@ -2697,6 +2700,141 @@
 
       showToast('묵상 메모가 저장되었습니다!');
     }
+
+  
+    // =========================================================================
+    // ANTIGRAVITY V10.0 ZERO-TANGLE ROCK-SOLID ARCHITECTURE
+    // =========================================================================
+
+    // 1. SAFELY EXTRACT NOTE TEXT FROM ANY FORMAT (STRING OR OBJECT)
+    function getVerseNoteText(vk) {
+      if (!vk || !verseNotes[vk]) return '';
+      var d = verseNotes[vk];
+      if (typeof d === 'object' && d !== null) {
+        return (d.noteText || d.note || '').trim();
+      }
+      return (d || '').toString().trim();
+    }
+
+    // 2. SAFELY EXTRACT VERSE VERSION NAME
+    function getVerseNoteVerName(vk) {
+      var defaultVer = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+      if (!vk || !verseNotes[vk]) return defaultVer;
+      var d = verseNotes[vk];
+      if (typeof d === 'object' && d !== null && d.verName) {
+        return d.verName;
+      }
+      return defaultVer;
+    }
+
+    // 3. BULLETPROOF NOTE SAVING & AUTO-HIDE EDIT BOX
+    function saveNoteInside(vk) {
+      if (!vk) vk = activeOpenNoteKey;
+      if (!vk) return;
+
+      var ta = document.getElementById('ta_note_' + vk);
+      var val = ta ? ta.value.trim() : '';
+
+      var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+      var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
+      var pureText = domCard ? (domCard.getAttribute('data-puretext') || '') : '';
+
+      if (val.length === 0) {
+        delete verseNotes[vk];
+      } else {
+        verseNotes[vk] = {
+          noteText: val,
+          verName: currentVerName,
+          pureText: pureText,
+          day: activeDay
+        };
+      }
+      saveJournals();
+
+      // Update indicator bar below verse card
+      var ind = document.getElementById('ind_note_' + vk);
+      if (ind) {
+        var txtSpan = ind.querySelector('.note-text-content');
+        if (val.length > 0) {
+          if (txtSpan) txtSpan.innerText = val;
+          ind.style.display = 'flex';
+        } else {
+          ind.style.display = 'none';
+        }
+      }
+
+      // Hide the note edit box
+      var box = document.getElementById('box_note_' + vk);
+      if (box) box.style.display = 'none';
+
+      activeOpenNoteKey = null;
+
+      // Sync Journal Tab 2 seamlessly
+      try {
+        renderJournalAlignedRows(activeDay);
+      } catch(e) {}
+
+      showToast('묵상 메모가 저장되었습니다!');
+    }
+
+    // 4. OPEN / TOGGLE NOTE EDIT BOX
+    function openNoteBox(vk) {
+      if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
+        saveNoteInside(activeOpenNoteKey);
+      }
+
+      var box = document.getElementById('box_note_' + vk);
+      var ind = document.getElementById('ind_note_' + vk);
+      var ta = document.getElementById('ta_note_' + vk);
+
+      if (box) {
+        var isShow = (box.style.display === 'flex' || box.style.display === 'block');
+        if (isShow) {
+          saveNoteInside(vk);
+        } else {
+          box.style.display = 'flex';
+          if (ind) ind.style.display = 'none';
+          if (ta) ta.focus();
+          activeOpenNoteKey = vk;
+        }
+      }
+    }
+
+    // 5. EVENT DELEGATION AT CONTAINER LEVEL (ZERO OVERHEAD)
+    document.addEventListener('DOMContentLoaded', function() {
+      var container = document.getElementById('bibleTextContainer');
+      if (!container) return;
+
+      container.addEventListener('click', function(e) {
+        var target = e.target;
+        if (!target) return;
+
+        // Click Save Button
+        if (target.classList.contains('btn-save-note-inside') || target.closest('.btn-save-note-inside')) {
+          e.preventDefault();
+          e.stopPropagation();
+          var btn = target.classList.contains('btn-save-note-inside') ? target : target.closest('.btn-save-note-inside');
+          var vk = btn.getAttribute('data-vkey');
+          saveNoteInside(vk);
+          return;
+        }
+
+        // Click Copy Note Button
+        if (target.classList.contains('btn-copy-note') || target.closest('.btn-copy-note')) {
+          e.preventDefault();
+          e.stopPropagation();
+          var btnC = target.classList.contains('btn-copy-note') ? target : target.closest('.btn-copy-note');
+          var vkC = btnC.getAttribute('data-vkey');
+          if (vkC) {
+            var noteVal = getVerseNoteText(vkC);
+            if (noteVal.length > 0) {
+              copyTextToClipboard(noteVal, '작성한 메모가 복사되었습니다!');
+            }
+          }
+          return;
+        }
+      });
+    });
 
   </script>
 </body>
