@@ -131,7 +131,7 @@
 
     /* CLEAN 2-LINE FORMATTED GESTURE TIP BOX */
     .gesture-tip-box {
-      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 12px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: left; line-height: 1.5;
+      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 12px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: center; line-height: 1.5;
     }
 
     .daily-reading-banner {
@@ -174,11 +174,7 @@
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; pointer-events: none; }
 
     .note-indicator {
-      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 10px 12px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; overflow: hidden; max-width: 100%; box-sizing: border-box;
-    }
-
-    .note-text-content {
-      word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; display: block; max-width: 100%;
+      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 8px 10px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; line-height: 1.5; white-space: pre-wrap;
     }
 
     .btn-copy-note {
@@ -186,7 +182,7 @@
     }
 
     .verse-note-box {
-      width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 12px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; overflow: hidden; max-width: 100%;
+      width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 10px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 6px;
     }
 
     .memo-guide-text {
@@ -194,7 +190,7 @@
     }
 
     .verse-note-textarea {
-      width: 100%; min-height: 90px; max-height: 500px; background: transparent; border: none; color: var(--text-primary); font-size: 0.98rem; line-height: 1.6; outline: none; resize: vertical; font-family: inherit; word-break: break-word; overflow-y: auto; box-sizing: border-box; padding: 4px 0;
+      width: 100%; min-height: 85px; background: transparent; border: none; color: var(--text-primary); font-size: 0.98rem; line-height: 1.55; outline: none; resize: vertical; font-family: inherit;
     }
 
     .btn-save-note-inside {
@@ -202,14 +198,14 @@
     }
     .btn-save-note-inside:active { opacity: 0.8; }
 
-    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: left; margin-top: 18px; margin-bottom: 35px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
+    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: center; margin-top: 18px; margin-bottom: 35px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
     .btn-complete { width: 100%; padding: 16px; font-size: 1.15rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
 
     .journal-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
     .journal-box-title { font-size: 1.05rem; font-weight: bold; color: var(--accent-green); margin-bottom: 8px; }
-    textarea { width: 100%; min-height: 160px; max-height: 600px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: var(--verse-font-size); resize: vertical; outline: none; line-height: 1.6; word-break: break-word; overflow-y: auto; box-sizing: border-box; }
+    textarea { width: 100%; min-height: 150px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: var(--verse-font-size); resize: vertical; outline: none; line-height: 1.6; }
 
     .btn-install-guide {
       width: 100%;
@@ -458,118 +454,10 @@
       font-weight: 800;
       font-size: 0.95rem;
       cursor: pointer;
-      text-align: left;
+      text-align: center;
       margin-top: 6px;
     }
-  
-    .journal-grid-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .journal-grid-container .journal-box {
-      margin-bottom: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-    .journal-grid-container textarea {
-      flex: 1;
-      min-height: 220px;
-    }
-
-
-    /* 100% PERFECT HORIZONTAL LINE ALIGNMENT (줄맞춤) JOURNAL ROW CARDS */
-    .journal-section-header-box {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-    }
-    .journal-box-title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
-    .btn-copy-note-sm {
-      background: var(--input-bg);
-      color: var(--accent-gold);
-      border: 1px solid var(--accent-gold);
-      padding: 3px 8px;
-      border-radius: 10px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      cursor: pointer;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-    .btn-copy-note-sm:active { opacity: 0.8; }
-
-    .journal-grid-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .journal-row-card {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-    .journal-col-left {
-      background: var(--input-bg);
-      border-left: 4px solid var(--accent-green);
-      border-radius: 8px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      word-break: break-word;
-    }
-    .journal-col-right {
-      background: var(--input-bg);
-      border-left: 4px solid var(--accent-gold);
-      border-radius: 8px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      word-break: break-word;
-    }
-    .journal-verse-tag {
-      font-size: 0.84rem;
-      font-weight: bold;
-      color: var(--accent-green);
-      line-height: 1.3;
-    }
-    .journal-note-tag {
-      font-size: 0.84rem;
-      font-weight: bold;
-      color: var(--accent-gold);
-      line-height: 1.3;
-    }
-    .journal-verse-text, .journal-note-text {
-      font-size: 0.90rem;
-      line-height: 1.6;
-      word-break: break-word;
-      white-space: pre-wrap;
-      color: var(--text-primary);
-    }
-
-</style>
+  </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
 <script src="bible_1John.js"></script>
@@ -637,7 +525,8 @@
 <script src="bible_Zechariah.js"></script>
 <script src="bible_Zephaniah.js"></script>
 
-  <script src="bible_db_66.js?v=20260814_1015"></script>
+  <script src="bible_db_66.js" defer></script>
+  <script src="bible_db_66.js"></script>
 </head>
 <body>
 
@@ -701,15 +590,13 @@
       <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
         ✏️ 통독 일기 작성
       </div>
-      <div class="journal-grid-container">
-        <div class="journal-box">
-          <div class="journal-box-title">📖 은혜받은 말씀</div>
-          <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
-        </div>
-        <div class="journal-box">
-          <div class="journal-box-title">💡 받은 교훈 및 적용</div>
-          <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
-        </div>
+      <div class="journal-box">
+        <div class="journal-box-title">📖 은혜받은 말씀</div>
+        <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
+      </div>
+      <div class="journal-box">
+        <div class="journal-box-title">💡 받은 교훈 및 적용</div>
+        <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
       </div>
     </section>
 
@@ -999,411 +886,6 @@
     }
 
     // IMPERATIVE IMMEDIATE PAUSE & STOP METHOD
-    // CLEAN, LIGHTWEIGHT & RELIABLE BIBLE TTS READER ENGINE
-    function stopTTSAudio(isFullReset) {
-      if ('speechSynthesis' in window) {
-        try { window.speechSynthesis.cancel(); } catch(e) {}
-      }
-
-      if (isFullReset) {
-        isTTSSpeaking = false;
-        isTTSPaused = false;
-        ttsSpeechItems = [];
-        currentTTSIndex = 0;
-      } else {
-        isTTSSpeaking = false;
-        isTTSPaused = true;
-      }
-
-      document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
-        el.classList.remove('is-reading-speaking');
-      });
-
-      var playerPopup = document.getElementById('audioPlayerPopup');
-      if (playerPopup) playerPopup.classList.remove('show');
-      updatePlayerControlsUI();
-    }
-
-    function startTTSAudio() {
-      if (!('speechSynthesis' in window)) {
-        alert('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
-        return;
-      }
-
-      if (isTTSSpeaking) {
-        stopTTSAudio(false);
-        showToast('낭독을 일시정지했습니다.');
-        return;
-      }
-
-      if (ttsSpeechItems.length === 0) {
-        ttsSpeechItems = [];
-        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
-
-        allReaderElements.forEach(function(el) {
-          if (el.classList.contains('bible-chapter-header')) {
-            var chText = el.innerText.replace('📖 ', '').trim();
-            ttsSpeechItems.push({ element: el, speakText: chText });
-          } else if (el.classList.contains('bible-verse-card')) {
-            var vPureText = el.getAttribute('data-puretext') || el.innerText;
-            ttsSpeechItems.push({ element: el, speakText: vPureText });
-          }
-        });
-      }
-
-      if (ttsSpeechItems.length === 0) {
-        showToast('낭독할 성경 본문이 없습니다.');
-        return;
-      }
-
-      if (!isTTSPaused) {
-        currentTTSIndex = selectedCursorVerseIndex;
-      }
-
-      isTTSSpeaking = true;
-      isTTSPaused = false;
-
-      var rate = ttsSpeedRates[currentTTSSpeedIndex];
-      if (currentTTSIndex > 0) {
-        showToast('선택하신 구절부터 음성 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
-      } else {
-        showToast('성경 본문 음성 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
-      }
-      updatePlayerControlsUI();
-      speakNextVerseTTS();
-    }
-
-    function speakNextVerseTTS() {
-      if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
-        var wasSpeaking = isTTSSpeaking;
-        stopTTSAudio(true);
-        if (wasSpeaking && currentTTSIndex >= ttsSpeechItems.length) {
-          showToast('오늘의 말씀을 모두 낭독했습니다!');
-        }
-        return;
-      }
-
-      var itemObj = ttsSpeechItems[currentTTSIndex];
-
-      document.querySelectorAll('.is-reading-speaking, .selected-cursor-verse').forEach(function(el) {
-        el.classList.remove('is-reading-speaking');
-        el.classList.remove('selected-cursor-verse');
-      });
-
-      if (itemObj && itemObj.element) {
-        itemObj.element.classList.add('is-reading-speaking');
-        itemObj.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-
-      updatePlayerControlsUI();
-
-      var utterance = new SpeechSynthesisUtterance(itemObj.speakText);
-      utterance.lang = 'ko-KR';
-      utterance.rate = ttsSpeedRates[currentTTSSpeedIndex] || 1.0;
-      utterance.pitch = 1.0;
-
-      var hasStepEnded = false;
-
-      utterance.onend = function() {
-        if (!isTTSSpeaking || hasStepEnded) return;
-        hasStepEnded = true;
-        currentTTSIndex++;
-        selectedCursorVerseIndex = currentTTSIndex;
-        speakNextVerseTTS();
-      };
-
-      utterance.onerror = function() {
-        if (!isTTSSpeaking || hasStepEnded) return;
-        hasStepEnded = true;
-        currentTTSIndex++;
-        selectedCursorVerseIndex = currentTTSIndex;
-        speakNextVerseTTS();
-      };
-
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.speak(utterance);
-      }
-    }
-
-    function updatePlayerControlsUI() {
-      var playerPopup = document.getElementById('audioPlayerPopup');
-      var pInfo = document.getElementById('playerCurrentVerseInfo');
-      var pPlayBtn = document.getElementById('btnPlayerPlayPause');
-      var pSpeedBtn = document.getElementById('btnPlayerSpeed');
-      var ttsHeaderBtnText = document.getElementById('ttsBtnText');
-      var ttsHeaderBtn = document.getElementById('btnAudioTTSPlay');
-
-      if (!playerPopup) return;
-
-      if (isTTSSpeaking || isTTSPaused) {
-        playerPopup.classList.add('show');
-      }
-
-      var rate = ttsSpeedRates[currentTTSSpeedIndex];
-      if (pSpeedBtn) pSpeedBtn.innerText = rate.toFixed(1) + '배속';
-
-      if (isTTSSpeaking) {
-        if (pPlayBtn) pPlayBtn.innerText = '⏸ 정지';
-        if (ttsHeaderBtnText) ttsHeaderBtnText.innerText = '중지';
-        if (ttsHeaderBtn) {
-          ttsHeaderBtn.style.borderColor = 'var(--accent-gold)';
-          ttsHeaderBtn.style.color = 'var(--accent-gold)';
-        }
-      } else {
-        if (pPlayBtn) pPlayBtn.innerText = '▶ 재생';
-        if (ttsHeaderBtnText) ttsHeaderBtnText.innerText = isTTSPaused ? '재생' : '낭독';
-        if (ttsHeaderBtn) {
-          ttsHeaderBtn.style.borderColor = 'var(--accent-green)';
-          ttsHeaderBtn.style.color = 'var(--accent-green)';
-        }
-      }
-
-      var activeIdx = isTTSSpeaking ? currentTTSIndex : selectedCursorVerseIndex;
-
-      if (ttsSpeechItems[activeIdx]) {
-        var itemObj = ttsSpeechItems[activeIdx];
-        var infoStr = '낭독 준비';
-        if (itemObj.element) {
-          if (itemObj.element.classList.contains('bible-chapter-header')) {
-            infoStr = itemObj.element.innerText.replace('📖 ', '').trim();
-          } else {
-            var vNum = itemObj.element.getAttribute('data-vnum');
-            var itemPassage = (scheduleData[activeDay] || {}).passage || '';
-            infoStr = itemPassage.split(' ')[0] + ' ' + vNum + '절' + (isTTSSpeaking ? ' 낭독 중' : ' 선택됨');
-          }
-        }
-        if (pInfo) pInfo.innerText = infoStr;
-      }
-    }
-
-    // IMPERATIVE IMMEDIATE PAUSE & STOP METHOD
-    // REAL MP3 HTML5 AUDIO ENGINE FOR 100% SCREEN-OFF & BACKGROUND PLAYBACK ON IOS & ANDROID
-    var realAudioPlayer = new Audio();
-    realAudioPlayer.preload = 'auto';
-
-    function stopTTSAudio(isFullReset) {
-      try { realAudioPlayer.pause(); } catch(e) {}
-      if ('speechSynthesis' in window) {
-        try { window.speechSynthesis.cancel(); } catch(e) {}
-      }
-
-      if (isFullReset) {
-        isTTSSpeaking = false;
-        isTTSPaused = false;
-        ttsSpeechItems = [];
-        currentTTSIndex = 0;
-      } else {
-        isTTSSpeaking = false;
-        isTTSPaused = true;
-      }
-
-      document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
-        el.classList.remove('is-reading-speaking');
-      });
-
-      var playerPopup = document.getElementById('audioPlayerPopup');
-      if (playerPopup) playerPopup.classList.remove('show');
-      updatePlayerControlsUI();
-    }
-
-    function startTTSAudio() {
-      if (isTTSSpeaking) {
-        stopTTSAudio(false);
-        showToast('낭독을 일시정지했습니다.');
-        return;
-      }
-
-      if (ttsSpeechItems.length === 0) {
-        ttsSpeechItems = [];
-        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
-
-        allReaderElements.forEach(function(el) {
-          if (el.classList.contains('bible-chapter-header')) {
-            var chText = el.innerText.replace('📖 ', '').trim();
-            ttsSpeechItems.push({ element: el, speakText: chText });
-          } else if (el.classList.contains('bible-verse-card')) {
-            var vPureText = el.getAttribute('data-puretext') || el.innerText;
-            ttsSpeechItems.push({ element: el, speakText: vPureText });
-          }
-        });
-      }
-
-      if (ttsSpeechItems.length === 0) {
-        showToast('낭독할 성경 본문이 없습니다.');
-        return;
-      }
-
-      if (!isTTSPaused) {
-        currentTTSIndex = selectedCursorVerseIndex;
-      }
-
-      isTTSSpeaking = true;
-      isTTSPaused = false;
-
-      if ('wakeLock' in navigator) {
-        try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
-      }
-
-      var rate = ttsSpeedRates[currentTTSSpeedIndex];
-      if (currentTTSIndex > 0) {
-        showToast('선택하신 구절부터 음성 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
-      } else {
-        showToast('성경 본문 음성 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
-      }
-      updatePlayerControlsUI();
-      speakNextVerseTTS();
-    }
-
-    function speakNextVerseTTS() {
-      if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
-        var wasSpeaking = isTTSSpeaking;
-        stopTTSAudio(true);
-        if (wasSpeaking && currentTTSIndex >= ttsSpeechItems.length) {
-          showToast('오늘의 말씀을 모두 낭독했습니다!');
-        }
-        return;
-      }
-
-      var itemObj = ttsSpeechItems[currentTTSIndex];
-
-      document.querySelectorAll('.is-reading-speaking, .selected-cursor-verse').forEach(function(el) {
-        el.classList.remove('is-reading-speaking');
-        el.classList.remove('selected-cursor-verse');
-      });
-
-      if (itemObj && itemObj.element) {
-        itemObj.element.classList.add('is-reading-speaking');
-        itemObj.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-
-      updatePlayerControlsUI();
-
-      var speakText = itemObj.speakText;
-
-      // Lock Screen & Control Center Metadata
-      if ('mediaSession' in navigator) {
-        try {
-          navigator.mediaSession.metadata = new MediaMetadata({
-            title: speakText.length > 35 ? speakText.substring(0, 35) + '...' : speakText,
-            artist: 'LoginChurch 성경통독일기장',
-            album: '📖 성경 통독 낭독 중',
-            artwork: [
-              { src: 'app_logo.png', sizes: '512x512', type: 'image/png' },
-              { src: 'header_logo.png', sizes: '512x512', type: 'image/png' }
-            ]
-          });
-
-          navigator.mediaSession.setActionHandler('play', function() {
-            if (!isTTSSpeaking) startTTSAudio();
-          });
-          navigator.mediaSession.setActionHandler('pause', function() {
-            stopTTSAudio(false);
-          });
-          navigator.mediaSession.setActionHandler('previoustrack', function() {
-            playPrevTTSVerse();
-          });
-          navigator.mediaSession.setActionHandler('nexttrack', function() {
-            playNextTTSVerse();
-          });
-        } catch(e) {}
-      }
-
-      // Real MP3 Audio Playback (Keeps playing on Screen Off & Background on iOS/Android!)
-      var encodedText = encodeURIComponent(speakText);
-      var mp3Url = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodedText + '&tl=ko&client=tw-ob';
-
-      var hasStepEnded = false;
-
-      realAudioPlayer.src = mp3Url;
-      realAudioPlayer.playbackRate = ttsSpeedRates[currentTTSSpeedIndex] || 1.0;
-
-      realAudioPlayer.onended = function() {
-        if (!isTTSSpeaking || hasStepEnded) return;
-        hasStepEnded = true;
-        currentTTSIndex++;
-        selectedCursorVerseIndex = currentTTSIndex;
-        speakNextVerseTTS();
-      };
-
-      realAudioPlayer.onerror = function() {
-        if (!isTTSSpeaking || hasStepEnded) return;
-        hasStepEnded = true;
-        speakWithWebSpeechFallback(speakText);
-      };
-
-      realAudioPlayer.play().catch(function(err) {
-        if (!isTTSSpeaking || hasStepEnded) return;
-        speakWithWebSpeechFallback(speakText);
-      });
-    }
-
-    function speakWithWebSpeechFallback(speakText) {
-      if (!('speechSynthesis' in window)) return;
-      try { window.speechSynthesis.cancel(); } catch(e) {}
-      var utterance = new SpeechSynthesisUtterance(speakText);
-      utterance.lang = 'ko-KR';
-      utterance.rate = ttsSpeedRates[currentTTSSpeedIndex] || 1.0;
-      utterance.onend = function() {
-        if (!isTTSSpeaking) return;
-        currentTTSIndex++;
-        selectedCursorVerseIndex = currentTTSIndex;
-        speakNextVerseTTS();
-      };
-      window.speechSynthesis.speak(utterance);
-    }
-
-    function updatePlayerControlsUI() {
-      var playerPopup = document.getElementById('audioPlayerPopup');
-      var pInfo = document.getElementById('playerCurrentVerseInfo');
-      var pPlayBtn = document.getElementById('btnPlayerPlayPause');
-      var pSpeedBtn = document.getElementById('btnPlayerSpeed');
-      var ttsHeaderBtnText = document.getElementById('ttsBtnText');
-      var ttsHeaderBtn = document.getElementById('btnAudioTTSPlay');
-
-      if (!playerPopup) return;
-
-      if (isTTSSpeaking || isTTSPaused) {
-        playerPopup.classList.add('show');
-      }
-
-      var rate = ttsSpeedRates[currentTTSSpeedIndex];
-      if (pSpeedBtn) pSpeedBtn.innerText = rate.toFixed(1) + '배속';
-
-      if (isTTSSpeaking) {
-        if (pPlayBtn) pPlayBtn.innerText = '⏸ 정지';
-        if (ttsHeaderBtnText) ttsHeaderBtnText.innerText = '중지';
-        if (ttsHeaderBtn) {
-          ttsHeaderBtn.style.borderColor = 'var(--accent-gold)';
-          ttsHeaderBtn.style.color = 'var(--accent-gold)';
-        }
-      } else {
-        if (pPlayBtn) pPlayBtn.innerText = '▶ 재생';
-        if (ttsHeaderBtnText) ttsHeaderBtnText.innerText = isTTSPaused ? '재생' : '낭독';
-        if (ttsHeaderBtn) {
-          ttsHeaderBtn.style.borderColor = 'var(--accent-green)';
-          ttsHeaderBtn.style.color = 'var(--accent-green)';
-        }
-      }
-
-      var activeIdx = isTTSSpeaking ? currentTTSIndex : selectedCursorVerseIndex;
-
-      if (ttsSpeechItems[activeIdx]) {
-        var itemObj = ttsSpeechItems[activeIdx];
-        var infoStr = '낭독 준비';
-        if (itemObj.element) {
-          if (itemObj.element.classList.contains('bible-chapter-header')) {
-            infoStr = itemObj.element.innerText.replace('📖 ', '').trim();
-          } else {
-            var vNum = itemObj.element.getAttribute('data-vnum');
-            var itemPassage = (scheduleData[activeDay] || {}).passage || '';
-            infoStr = itemPassage.split(' ')[0] + ' ' + vNum + '절' + (isTTSSpeaking ? ' 낭독 중' : ' 선택됨');
-          }
-        }
-        if (pInfo) pInfo.innerText = infoStr;
-      }
-    }
-
-    // IMPERATIVE IMMEDIATE PAUSE & STOP METHOD
     function stopTTSAudio(isFullReset) {
       var bgAudio = document.getElementById('bgSilentAudio');
       if (bgAudio) {
@@ -1436,11 +918,6 @@
 
     // TOUCH VERSE HANDLER
     function handleVerseElementTouch(targetEl) {
-      // When audio is currently playing, ignore taps on verse cards so user can scroll freely without interrupting playback!
-      if (isTTSSpeaking) {
-        return;
-      }
-
       if (ttsSpeechItems.length === 0) {
         ttsSpeechItems = [];
         var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
@@ -1465,18 +942,31 @@
 
       if (targetIdx !== -1) {
         selectedCursorVerseIndex = targetIdx;
+        currentTTSIndex = targetIdx;
 
         document.querySelectorAll('.selected-cursor-verse').forEach(function(el) {
           el.classList.remove('selected-cursor-verse');
         });
         targetEl.classList.add('selected-cursor-verse');
 
-        var vNum = targetEl.getAttribute('data-vnum');
-        if (vNum) {
-          showToast(vNum + '절이 선택되었습니다. [🔊 재생] 버튼을 누르면 이 구절부터 낭독합니다.');
-        } else {
-          showToast('선택된 위치부터 낭독 준비되었습니다. [🔊 재생] 버튼을 누르세요.');
+        // Immediately start reading from touched verse!
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch(e) {}
         }
+        isTTSSpeaking = true;
+        isTTSPaused = false;
+
+        var bgAudio = document.getElementById('bgSilentAudio');
+        if (bgAudio) {
+          try { bgAudio.play().catch(function(e){}); } catch(e) {}
+        }
+
+        if ('wakeLock' in navigator) {
+          try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
+        }
+
+        updatePlayerControlsUI();
+        speakNextVerseTTS();
       }
     }
 
@@ -1904,137 +1394,43 @@
       }
     }
 
-    function syncVerseNotesToJournalForDay(dayNum) {
-      if (!dayNum) dayNum = activeDay;
-      var item = scheduleData[dayNum];
-      if (!item || !item.books) return;
-
-      var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      var dayKey = 'day_' + dayNum;
-      if (!journals[dayKey]) journals[dayKey] = {};
-
-      var verseQuotesList = [];
-      var verseNotesList = [];
-
-      // Scan all verses in today's reading
-      (item.books || []).forEach(function(bInfo) {
-        var bookName = bInfo.book;
-        for (var c = bInfo.start; c <= bInfo.end; c++) {
-          // Check for all verse cards rendered or in verseNotes DB
-          var prefix = bookName + '_' + c + '_';
-          Object.keys(verseNotes).forEach(function(vk) {
-            if (vk.indexOf(prefix) === 0) {
-              var nData = verseNotes[vk];
-              var noteText = (typeof nData === 'object' && nData !== null) ? (nData.noteText || '') : (nData || '');
-              if (noteText.trim().length > 0) {
-                var vParts = vk.split('_');
-                var vNum = vParts[2] || '';
-                var verName = (typeof nData === 'object' && nData && nData.verName) ? nData.verName : currentVerName;
-                var pureText = (typeof nData === 'object' && nData && nData.pureText) ? nData.pureText : '';
-
-                // Try DOM text if pureText missing
-                if (!pureText) {
-                  var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
-                  if (domCard) pureText = domCard.getAttribute('data-puretext') || domCard.innerText;
-                }
-
-                var verseRefHeader = '[' + bookName + ' ' + c + ':' + vNum + ' ' + verName + ']';
-                var fullVerseQuote = verseRefHeader + (pureText ? ' ' + pureText : '');
-                var fullLessonNote = '[' + bookName + ' ' + c + ':' + vNum + ' 묵상] ' + noteText.trim();
-
-                if (verseQuotesList.indexOf(fullVerseQuote) === -1) {
-                  verseQuotesList.push(fullVerseQuote);
-                }
-                if (verseNotesList.indexOf(fullLessonNote) === -1) {
-                  verseNotesList.push(fullLessonNote);
-                }
-              }
-            }
-          });
-        }
-      });
-
-      if (verseQuotesList.length > 0) {
-        journals[dayKey].grace = verseQuotesList.join('\n\n');
-      }
-      if (verseNotesList.length > 0) {
-        journals[dayKey].lesson = verseNotesList.join('\n\n');
-      }
-
-      saveJournals();
-
-      // Update textareas if current tab is journal editor
-      var eg = document.getElementById('editorGrace');
-      var el = document.getElementById('editorLesson');
-      if (eg && journals[dayKey].grace) eg.value = journals[dayKey].grace;
-      if (el && journals[dayKey].lesson) el.value = journals[dayKey].lesson;
-    }
-
-    // =========================================================================
-    // 9:26 AM ROCK-SOLID STABLE VERSION
-    // =========================================================================
-
     function autoSaveActiveNote() {
-      if (!activeOpenNoteKey) return;
-      var ta = document.getElementById('ta_note_' + activeOpenNoteKey);
-      if (ta) {
+      if (activeOpenNoteKey) {
         var vk = activeOpenNoteKey;
-        var val = ta.value.trim();
-        if (val.length === 0) {
-          delete verseNotes[vk];
-        } else {
-          verseNotes[vk] = val;
-        }
-        saveJournals();
-
+        var box = document.getElementById('box_note_' + vk);
         var ind = document.getElementById('ind_note_' + vk);
-        if (ind) {
-          var txtSpan = ind.querySelector('.note-text-content');
-          if (val.length > 0) {
-            if (txtSpan) txtSpan.innerText = val;
-            ind.style.display = 'flex';
-          } else {
-            ind.style.display = 'none';
+        var ta = document.getElementById('ta_note_' + vk);
+
+        if (ta) {
+          var val = ta.value.trim();
+          verseNotes[vk] = val;
+          saveJournals();
+
+          if (box) box.style.display = 'none';
+
+          if (ind) {
+            if (val.length > 0) {
+              ind.style.display = 'flex';
+              var txtSpan = ind.querySelector('.note-text-content');
+              if (txtSpan) txtSpan.innerText = val;
+            } else {
+              ind.style.display = 'none';
+            }
+          }
+
+          var card = box ? box.parentElement : null;
+          if (card) {
+            if (val.length > 0) card.classList.add('has-note-card');
+            else card.classList.remove('has-note-card');
           }
         }
+        activeOpenNoteKey = null;
       }
-    }
-
-    function saveNoteInside(vk) {
-      if (!vk) vk = activeOpenNoteKey;
-      if (!vk) return;
-
-      var ta = document.getElementById('ta_note_' + vk);
-      var val = ta ? ta.value.trim() : '';
-
-      if (val.length === 0) {
-        delete verseNotes[vk];
-      } else {
-        verseNotes[vk] = val;
-      }
-      saveJournals();
-
-      var ind = document.getElementById('ind_note_' + vk);
-      if (ind) {
-        var txtSpan = ind.querySelector('.note-text-content');
-        if (val.length > 0) {
-          if (txtSpan) txtSpan.innerText = val;
-          ind.style.display = 'flex';
-        } else {
-          ind.style.display = 'none';
-        }
-      }
-
-      var box = document.getElementById('box_note_' + vk);
-      if (box) box.style.display = 'none';
-
-      activeOpenNoteKey = null;
-      showToast('묵상 메모가 저장되었습니다!');
     }
 
     function openNoteBox(vk) {
       if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
-        saveNoteInside(activeOpenNoteKey);
+        autoSaveActiveNote();
       }
       var box = document.getElementById('box_note_' + vk);
       var ind = document.getElementById('ind_note_' + vk);
@@ -2043,17 +1439,19 @@
       if (box) {
         var isShow = (box.style.display === 'flex' || box.style.display === 'block');
         if (isShow) {
-          saveNoteInside(vk);
+          autoSaveActiveNote();
         } else {
           box.style.display = 'flex';
           if (ind) ind.style.display = 'none';
-          if (ta) ta.focus();
+          if (ta) {
+            ta.focus();
+          }
           activeOpenNoteKey = vk;
         }
       }
     }
 
-    function getBibleDatabase() {
+        function getBibleDatabase() {
       var db = null;
       if (currentBibleVersion === 'KH') {
         db = (window.BIBLE_FULL_DB_KH && Object.keys(window.BIBLE_FULL_DB_KH).length > 0) ? window.BIBLE_FULL_DB_KH : window.BIBLE_66_DB_KH;
@@ -2073,7 +1471,6 @@
       }
       return db;
     }
-
     function renderBible(item) {
       autoSaveActiveNote();
       selectedCursorVerseIndex = 0;
@@ -2091,7 +1488,9 @@
         return;
       }
 
-      var db = getBibleDatabase();
+      var db = window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_FULL_DB || {};
+      if (currentBibleVersion === 'KH') db = window.BIBLE_FULL_DB_KH || window.BIBLE_66_DB_KH || window.BIBLE_FULL_DB || {};
+      if (currentBibleVersion === 'SB') db = window.BIBLE_FULL_DB_SB || window.BIBLE_66_DB_SB || window.BIBLE_FULL_DB || {};
 
       (item.books || []).forEach(function(bInfo) {
         var bookName = bInfo.book;
@@ -2108,8 +1507,7 @@
             var vNum = (idx + 1);
             var verseKey = bookName + '_' + c + '_' + vNum;
             var formattedCopyStr = '[' + bookName + ' ' + c + ':' + vNum + '] ' + vText;
-            var savedNote = (typeof verseNotes[verseKey] === 'object' && verseNotes[verseKey] !== null) ? (verseNotes[verseKey].noteText || '') : (verseNotes[verseKey] || '');
-            var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
+            var savedNote = verseNotes[verseKey] || '';
 
             var itemEl = document.createElement('div');
             itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
@@ -2118,10 +1516,12 @@
             itemEl.setAttribute('data-puretext', vText);
             itemEl.setAttribute('data-copystr', formattedCopyStr);
             itemEl.setAttribute('data-lasttap', '0');
+            var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
             itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
               '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
                 '<div style="flex:1;">📝 <span class="note-text-content">' + savedNote + '</span></div>' +
+                '<button class="btn-copy-note" id="btncopy_' + verseKey + '">메모 복사</button>' +
               '</div>' +
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
                 '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
@@ -2133,8 +1533,10 @@
             var isLongPressExecuted = false;
 
             itemEl.addEventListener('touchstart', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-save-note-inside')) return;
+              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+              
               isLongPressExecuted = false;
+
               if (pressTimer) clearTimeout(pressTimer);
               pressTimer = setTimeout(function() {
                 isLongPressExecuted = true;
@@ -2145,8 +1547,11 @@
 
             itemEl.addEventListener('touchend', function(e) {
               if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-save-note-inside')) return;
-              if (isLongPressExecuted) return;
+              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+
+              if (isLongPressExecuted) {
+                return;
+              }
 
               var currentTime = new Date().getTime();
               var lastTapTime = parseInt(itemEl.getAttribute('data-lasttap') || '0', 10);
@@ -2166,18 +1571,27 @@
             });
 
             itemEl.addEventListener('dblclick', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-save-note-inside')) return;
+              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
               openNoteBox(verseKey);
             });
+
+            var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
+            if (btnCopy) {
+              btnCopy.onclick = function(ev) {
+                ev.stopPropagation();
+                var noteVal = verseNotes[verseKey] || '';
+                if (noteVal.trim().length > 0) {
+                  copyTextToClipboard(noteVal, '작성한 메모가 복사되었습니다!');
+                }
+              };
+            }
 
             var btnSave = itemEl.querySelector('#btnsave_' + verseKey);
             if (btnSave) {
               btnSave.onclick = function(ev) {
-                if (ev) {
-                  ev.preventDefault();
-                  ev.stopPropagation();
-                }
-                saveNoteInside(verseKey);
+                ev.stopPropagation();
+                autoSaveActiveNote();
+                showToast('묵상 메모가 저장되었습니다!');
               };
             }
 
@@ -2388,369 +1802,36 @@
     renderSchedule();
   });
   
-    // ITUNES / APPLE MUSIC STYLE BACKGROUND AUDIO ENGINE
-    var bgAudioContext = null;
-    var bgAudioElement = null;
-
-    function initBackgroundMusicMode() {
-      if (!bgAudioElement) {
-        bgAudioElement = document.getElementById('bgSilentAudio');
-        if (!bgAudioElement) {
-          bgAudioElement = document.createElement('audio');
-          bgAudioElement.id = 'bgSilentAudio';
-          bgAudioElement.loop = true;
-          bgAudioElement.preload = 'auto';
-          bgAudioElement.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-          document.body.appendChild(bgAudioElement);
+    // Keep Audio Playing when Hiding App or Switching to Other Apps
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden && isTTSSpeaking) {
+        var bgAudio = document.getElementById('bgSilentAudio');
+        if (bgAudio) {
+          try { bgAudio.play().catch(function(e){}); } catch(e) {}
         }
-      }
-
-      try {
-        bgAudioElement.play().catch(function(e){});
-      } catch(e) {}
-
-      try {
-        var AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass && !bgAudioContext) {
-          bgAudioContext = new AudioContextClass();
-          var osc = bgAudioContext.createOscillator();
-          var gain = bgAudioContext.createGain();
-          gain.gain.value = 0.0001;
-          osc.connect(gain);
-          gain.connect(bgAudioContext.destination);
-          osc.start();
+        if ('speechSynthesis' in window && window.speechSynthesis.paused) {
+          try { window.speechSynthesis.resume(); } catch(e) {}
         }
-        if (bgAudioContext && bgAudioContext.state === 'suspended') {
-          bgAudioContext.resume();
-        }
-      } catch(e) {}
-
-      if ('wakeLock' in navigator) {
-        try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
-      }
-    }
-
-    if (!window.itunesBgKeeper) {
-      window.itunesBgKeeper = setInterval(function() {
-        if (isTTSSpeaking) {
-          if (bgAudioContext && bgAudioContext.state === 'suspended') {
-            try { bgAudioContext.resume(); } catch(e) {}
-          }
-          if ('speechSynthesis' in window && window.speechSynthesis.paused) {
-            try { window.speechSynthesis.resume(); } catch(e) {}
-          }
-        }
-      }, 2000);
-    }
-
-  
-    // SCREEN WAKE LOCK: PREVENT SMARTPHONE SCREEN FROM FORCIBLY DIMS OR LOCKS WHILE READING
-    var screenWakeLockObj = null;
-    async function activateScreenWakeLock() {
-      if ('wakeLock' in navigator && !screenWakeLockObj) {
-        try {
-          screenWakeLockObj = await navigator.wakeLock.request('screen');
-          screenWakeLockObj.addEventListener('release', function() {
-            screenWakeLockObj = null;
-          });
-        } catch(e) {}
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', activateScreenWakeLock);
-    document.addEventListener('click', activateScreenWakeLock);
-    document.addEventListener('touchstart', activateScreenWakeLock, { passive: true });
-
-  
-    function autoExpandTextarea(el) {
-      if (!el) return;
-      el.style.height = 'auto';
-      el.style.height = Math.max(el.scrollHeight, 90) + 'px';
-    }
-
-    document.addEventListener('input', function(e) {
-      if (e.target && e.target.tagName === 'TEXTAREA') {
-        autoExpandTextarea(e.target);
-      }
-    });    }    }    }
-
-  
-    // MOBILE NETWORK SMARTPHONE DB LOAD LISTENER (FOR IPHONE & GALAXY)
-    document.addEventListener('DOMContentLoaded', function() {
-      var script66 = document.querySelector('script[src*="bible_db_66.js"]');
-      if (script66) {
-        script66.addEventListener('load', function() {
-          if (scheduleData && scheduleData[activeDay]) {
-            renderBible(scheduleData[activeDay]);
-          }
-        });
       }
     });
 
-    var mobileDbCheckCount = 0;
-    var mobileDbCheckTimer = setInterval(function() {
-      mobileDbCheckCount++;
-      if (window.BIBLE_66_DB_KG || window.BIBLE_66_DB_SB || window.BIBLE_66_DB_KH) {
-        clearInterval(mobileDbCheckTimer);
-        if (scheduleData && scheduleData[activeDay]) {
-          renderBible(scheduleData[activeDay]);
-        }
-      }
-      if (mobileDbCheckCount > 25) clearInterval(mobileDbCheckTimer);
-    }, 400);
-                notedVersesList.push({
-                  verseKey: vk,
-                  book: bookName,
-                  chapter: c,
-                  vNum: parseInt(vNum, 10) || 0,
-                  verName: verName,
-                  pureText: pureText,
-                  noteText: noteText.trim()
-                });
-              }
-            }
-          });
-        }
-      });
-
-      // Sort by verse number
-      notedVersesList.sort(function(a, b) { return a.vNum - b.vNum; });
-
-      if (notedVersesList.length === 0) {
-        container.innerHTML = '<div style="grid-column: 1 / -1; padding: 25px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">📝 오늘 읽으신 성경 구절에 묵상 메모를 작성해 보세요.<br>작성하신 구절과 묵상 내용이 이곳에 줄맞춤 연동됩니다.</div>';
-        return;
-      }
-
-      var fullGraceStrList = [];
-      var fullLessonStrList = [];
-
-      notedVersesList.forEach(function(vObj) {
-        var verseHeader = '[' + vObj.book + ' ' + vObj.chapter + ':' + vObj.vNum + ' ' + vObj.verName + ']';
-        var lessonHeader = '[' + vObj.book + ' ' + vObj.chapter + ':' + vObj.vNum + ' 묵상]';
-
-        fullGraceStrList.push(verseHeader + (vObj.pureText ? ' ' + vObj.pureText : ''));
-        fullLessonStrList.push(lessonHeader + ' ' + vObj.noteText);
-
-        var rowCard = document.createElement('div');
-        rowCard.className = 'journal-row-card';
-        rowCard.innerHTML = 
-          '<div class="journal-col-left">' +
-            '<div class="journal-verse-tag">' + verseHeader + '</div>' +
-            '<div class="journal-verse-text">' + (vObj.pureText || '') + '</div>' +
-          '</div>' +
-          '<div class="journal-col-right">' +
-            '<div class="journal-note-tag">' + lessonHeader + '</div>' +
-            '<div class="journal-note-text">' + vObj.noteText + '</div>' +
-          '</div>';
-
-        container.appendChild(rowCard);
-      });
-
-      var eg = document.getElementById('editorGrace');
-      var el = document.getElementById('editorLesson');
-      if (eg) eg.value = fullGraceStrList.join('\n\n');
-      if (el) el.value = fullLessonStrList.join('\n\n');
-
-      if (journals[dayKey]) {
-        journals[dayKey].grace = fullGraceStrList.join('\n\n');
-        journals[dayKey].lesson = fullLessonStrList.join('\n\n');
-        saveJournals();
-      }
-    }
-
   
-    function saveNoteInside(vk) {
-      if (!vk) vk = activeOpenNoteKey;
-      if (!vk) return;
-
-      var ta = document.getElementById('ta_note_' + vk);
-      var val = ta ? ta.value.trim() : '';
-
-      if (val.length === 0) {
-        delete verseNotes[vk];
-      } else {
-        verseNotes[vk] = val;
-      }
-      saveJournals();
-
-      var ind = document.getElementById('ind_note_' + vk);
-      if (ind) {
-        var txtSpan = ind.querySelector('.note-text-content');
-        if (val.length > 0) {
-          if (txtSpan) txtSpan.innerText = val;
-          ind.style.display = 'flex';
-        } else {
-          ind.style.display = 'none';
+    // SCREEN WAKE LOCK KEEPER
+    var globalWakeLock = null;
+    async function requestScreenWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          globalWakeLock = await navigator.wakeLock.request('screen');
         }
-      }
-
-      var box = document.getElementById('box_note_' + vk);
-      if (box) box.style.display = 'none';
-
-      activeOpenNoteKey = null;
-      showToast('묵상 메모가 저장되었습니다!');
+      } catch (err) {}
     }
-
-    function openNoteBox(vk) {
-      if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
-        saveNoteInside(activeOpenNoteKey);
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible' && isPlayingAudio) {
+        requestScreenWakeLock();
       }
-      var box = document.getElementById('box_note_' + vk);
-      var ind = document.getElementById('ind_note_' + vk);
-      var ta = document.getElementById('ta_note_' + vk);
-
-      if (box) {
-        var isShow = (box.style.display === 'flex' || box.style.display === 'block');
-        if (isShow) {
-          saveNoteInside(vk);
-        } else {
-          box.style.display = 'flex';
-          if (ind) ind.style.display = 'none';
-          if (ta) ta.focus();
-          activeOpenNoteKey = vk;
-        }
-      }
-    }
-
-  
-    // =========================================================================
-    // ANTIGRAVITY V10.0 ZERO-TANGLE ROCK-SOLID ARCHITECTURE
-    // =========================================================================
-
-    // 1. SAFELY EXTRACT NOTE TEXT FROM ANY FORMAT (STRING OR OBJECT)
-    function getVerseNoteText(vk) {
-      if (!vk || !verseNotes[vk]) return '';
-      var d = verseNotes[vk];
-      if (typeof d === 'object' && d !== null) {
-        return (d.noteText || d.note || '').trim();
-      }
-      return (d || '').toString().trim();
-    }
-
-    // 2. SAFELY EXTRACT VERSE VERSION NAME
-    function getVerseNoteVerName(vk) {
-      var defaultVer = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      if (!vk || !verseNotes[vk]) return defaultVer;
-      var d = verseNotes[vk];
-      if (typeof d === 'object' && d !== null && d.verName) {
-        return d.verName;
-      }
-      return defaultVer;
-    }
-
-    // 3. BULLETPROOF NOTE SAVING & AUTO-HIDE EDIT BOX
-    function saveNoteInside(vk) {
-      if (!vk) vk = activeOpenNoteKey;
-      if (!vk) return;
-
-      var ta = document.getElementById('ta_note_' + vk);
-      var val = ta ? ta.value.trim() : '';
-
-      if (val.length === 0) {
-        delete verseNotes[vk];
-      } else {
-        verseNotes[vk] = val;
-      }
-      saveJournals();
-
-      var ind = document.getElementById('ind_note_' + vk);
-      if (ind) {
-        var txtSpan = ind.querySelector('.note-text-content');
-        if (val.length > 0) {
-          if (txtSpan) txtSpan.innerText = val;
-          ind.style.display = 'flex';
-        } else {
-          ind.style.display = 'none';
-        }
-      }
-
-      var box = document.getElementById('box_note_' + vk);
-      if (box) box.style.display = 'none';
-
-      activeOpenNoteKey = null;
-      showToast('묵상 메모가 저장되었습니다!');
-    }
-
-    function openNoteBox(vk) {
-      if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
-        saveNoteInside(activeOpenNoteKey);
-      }
-      var box = document.getElementById('box_note_' + vk);
-      var ind = document.getElementById('ind_note_' + vk);
-      var ta = document.getElementById('ta_note_' + vk);
-
-      if (box) {
-        var isShow = (box.style.display === 'flex' || box.style.display === 'block');
-        if (isShow) {
-          saveNoteInside(vk);
-        } else {
-          box.style.display = 'flex';
-          if (ind) ind.style.display = 'none';
-          if (ta) ta.focus();
-          activeOpenNoteKey = vk;
-        }
-      }
-    }
-
-    // 4. OPEN / TOGGLE NOTE EDIT BOX
-    function openNoteBox(vk) {
-      if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
-        saveNoteInside(activeOpenNoteKey);
-      }
-
-      var box = document.getElementById('box_note_' + vk);
-      var ind = document.getElementById('ind_note_' + vk);
-      var ta = document.getElementById('ta_note_' + vk);
-
-      if (box) {
-        var isShow = (box.style.display === 'flex' || box.style.display === 'block');
-        if (isShow) {
-          saveNoteInside(vk);
-        } else {
-          box.style.display = 'flex';
-          if (ind) ind.style.display = 'none';
-          if (ta) ta.focus();
-          activeOpenNoteKey = vk;
-        }
-      }
-    }
-
-    // 5. EVENT DELEGATION AT CONTAINER LEVEL (ZERO OVERHEAD)
-    document.addEventListener('DOMContentLoaded', function() {
-      var container = document.getElementById('bibleTextContainer');
-      if (!container) return;
-
-      container.addEventListener('click', function(e) {
-        var target = e.target;
-        if (!target) return;
-
-        // Click Save Button
-        if (target.classList.contains('btn-save-note-inside') || target.closest('.btn-save-note-inside')) {
-          e.preventDefault();
-          e.stopPropagation();
-          var btn = target.classList.contains('btn-save-note-inside') ? target : target.closest('.btn-save-note-inside');
-          var vk = btn.getAttribute('data-vkey');
-          saveNoteInside(vk);
-          return;
-        }
-
-        // Click Copy Note Button
-        if (target.classList.contains('btn-copy-note') || target.closest('.btn-copy-note')) {
-          e.preventDefault();
-          e.stopPropagation();
-          var btnC = target.classList.contains('btn-copy-note') ? target : target.closest('.btn-copy-note');
-          var vkC = btnC.getAttribute('data-vkey');
-          if (vkC) {
-            var noteVal = getVerseNoteText(vkC);
-            if (noteVal.length > 0) {
-              copyTextToClipboard(noteVal, '작성한 메모가 복사되었습니다!');
-            }
-          }
-          return;
-        }
-      });
     });
 
   </script>
+  <audio id="bgSilentAudio" loop preload="auto" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="></audio>
 </body>
 </html>
