@@ -1592,11 +1592,17 @@
 
             var pressTimer = null;
             var isLongPressExecuted = false;
+            var touchStartY = 0;
+            var isTouchScrolling = false;
 
             itemEl.addEventListener('touchstart', function(e) {
               if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
               
               isLongPressExecuted = false;
+              isTouchScrolling = false;
+              if (e.touches && e.touches[0]) {
+                touchStartY = e.touches[0].clientY;
+              }
 
               if (pressTimer) clearTimeout(pressTimer);
               pressTimer = setTimeout(function() {
@@ -1606,11 +1612,21 @@
               }, 550);
             }, { passive: true });
 
+            itemEl.addEventListener('touchmove', function(e) {
+              if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+              if (e.touches && e.touches[0]) {
+                var deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+                if (deltaY > 8) {
+                  isTouchScrolling = true;
+                }
+              }
+            }, { passive: true });
+
             itemEl.addEventListener('touchend', function(e) {
               if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
               if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
 
-              if (isLongPressExecuted) {
+              if (isLongPressExecuted || isTouchScrolling) {
                 return;
               }
 
@@ -1625,10 +1641,6 @@
                 itemEl.setAttribute('data-lasttap', currentTime.toString());
                 handleVerseElementTouch(itemEl);
               }
-            });
-
-            itemEl.addEventListener('touchmove', function() {
-              if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
             });
 
             itemEl.addEventListener('dblclick', function(e) {
