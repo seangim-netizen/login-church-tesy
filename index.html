@@ -701,32 +701,15 @@
       <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
         ✏️ 통독 일기 작성
       </div>
-      <!-- 2-COLUMN HEADER WITH COMPACT COPY BUTTONS -->
-      <div class="journal-grid-container" style="margin-bottom: 8px;">
-        <div class="journal-section-header-box">
-          <div class="journal-box-title-row">
-            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.86rem; white-space: nowrap; flex-shrink: 0;">📖 은혜받은 말씀</div>
-            <button class="btn-copy-note-sm" onclick="copyGraceToClipboard()">📋 구절 복사</button>
-          </div>
+      <div class="journal-grid-container">
+        <div class="journal-box">
+          <div class="journal-box-title">📖 은혜받은 말씀</div>
+          <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
         </div>
-        <div class="journal-section-header-box">
-          <div class="journal-box-title-row">
-            <div class="journal-box-title" style="margin-bottom: 0; font-size: 0.86rem; white-space: nowrap; flex-shrink: 0;">💡 받은 교훈 및 적용</div>
-            <button class="btn-copy-note-sm" onclick="copyLessonToClipboard()">📋 묵상 복사</button>
-          </div>
+        <div class="journal-box">
+          <div class="journal-box-title">💡 받은 교훈 및 적용</div>
+          <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
         </div>
-      </div>
-
-      <!-- ALIGNED ROW CARDS CONTAINER (줄맞춤 연동) -->
-      <div id="journalAlignedRowsContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
-
-      <textarea id="editorGrace" style="display:none;"></textarea>
-      <textarea id="editorLesson" style="display:none;"></textarea>
-
-      <div style="margin-top: 14px; margin-bottom: 24px;">
-        <button class="btn-copy-note" onclick="copyFullJournalToClipboard()" style="width: 100%; padding: 12px; font-size: 0.95rem; background: var(--accent-green); color: #ffffff; border: none; border-radius: 10px; font-weight: bold;">
-          📋 오늘 성경 구절 &amp; 묵상 전체 복사하기
-        </button>
       </div>
     </section>
 
@@ -2115,18 +2098,18 @@
             itemEl.setAttribute('data-lasttap', '0');
             var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
-            var noteStr = getVerseNoteText(verseKey);
-            var displayIndStyle = (noteStr.length > 0) ? 'display: flex;' : 'display: none;';
+            var savedNoteRaw = verseNotes[verseKey] || '';
+            var savedNote = (typeof savedNoteRaw === 'object' && savedNoteRaw !== null) ? (savedNoteRaw.noteText || '') : (savedNoteRaw || '');
+            var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
             itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
               '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
-                '<div style="flex:1;">📝 <span class="note-text-content">' + noteStr + '</span></div>' +
-                '<button class="btn-copy-note" data-vkey="' + verseKey + '">메모 복사</button>' +
+                '<div style="flex:1;">📝 <span class="note-text-content">' + savedNote + '</span></div>' +
               '</div>' +
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
                 '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
-                '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + noteStr + '</textarea>' +
-                '<button class="btn-save-note-inside" data-vkey="' + verseKey + '">저장 완료</button>' +
+                '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
+                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">저장 완료</button>' +
               '</div>';
 
             var pressTimer = null;
@@ -2491,43 +2474,7 @@
       if (e.target && e.target.tagName === 'TEXTAREA') {
         autoExpandTextarea(e.target);
       }
-    });
-
-  
-    function copyGraceToClipboard() {
-      var eg = document.getElementById('editorGrace');
-      if (eg && eg.value.trim().length > 0) {
-        copyTextToClipboard(eg.value.trim(), '📖 은혜받은 말씀 (성경 구절) 복사 완료!');
-      } else {
-        showToast('복사할 은혜받은 말씀(구절)이 없습니다.');
-      }
-    }
-
-    function copyLessonToClipboard() {
-      var el = document.getElementById('editorLesson');
-      if (el && el.value.trim().length > 0) {
-        copyTextToClipboard(el.value.trim(), '💡 받은 교훈 및 묵상 내용 복사 완료!');
-      } else {
-        showToast('복사할 교훈 및 묵상 메모가 없습니다.');
-      }
-    }
-
-    function copyFullJournalToClipboard() {
-      var eg = document.getElementById('editorGrace');
-      var el = document.getElementById('editorLesson');
-      var gVal = eg ? eg.value.trim() : '';
-      var lVal = el ? el.value.trim() : '';
-
-      var fullText = '';
-      if (gVal) fullText += '[📖 은혜받은 말씀]\n' + gVal + '\n\n';
-      if (lVal) fullText += '[💡 받은 교훈 및 적용]\n' + lVal;
-
-      if (fullText.trim().length > 0) {
-        copyTextToClipboard(fullText.trim(), '📖 오늘 작성한 성경 구절 및 묵상 전체 복사 완료!');
-      } else {
-        showToast('복사할 일기 내용이 없습니다.');
-      }
-    }
+    });    }    }    }
 
   
     // MOBILE NETWORK SMARTPHONE DB LOAD LISTENER (FOR IPHONE & GALAXY)
@@ -2553,40 +2500,6 @@
       }
       if (mobileDbCheckCount > 25) clearInterval(mobileDbCheckTimer);
     }, 400);
-
-  
-    function renderJournalAlignedRows(dayNum) {
-      if (!dayNum) dayNum = activeDay;
-      var dayKey = 'day_' + dayNum;
-      var item = scheduleData[dayNum];
-      if (!item) return;
-
-      var container = document.getElementById('journalAlignedRowsContainer');
-      if (!container) return;
-      container.innerHTML = '';
-
-      var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      var notedVersesList = [];
-
-      (item.books || []).forEach(function(bInfo) {
-        var bookName = bInfo.book;
-        for (var c = bInfo.start; c <= bInfo.end; c++) {
-          var prefix = bookName + '_' + c + '_';
-          Object.keys(verseNotes).forEach(function(vk) {
-            if (vk.indexOf(prefix) === 0) {
-              var nData = verseNotes[vk];
-              var noteText = (typeof nData === 'object' && nData !== null) ? (nData.noteText || '') : (nData || '');
-              if (noteText.trim().length > 0) {
-                var vParts = vk.split('_');
-                var vNum = vParts[2] || '';
-                var verName = (typeof nData === 'object' && nData && nData.verName) ? nData.verName : currentVerName;
-                var pureText = (typeof nData === 'object' && nData && nData.pureText) ? nData.pureText : '';
-
-                if (!pureText) {
-                  var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
-                  if (domCard) pureText = domCard.getAttribute('data-puretext') || domCard.innerText;
-                }
-
                 notedVersesList.push({
                   verseKey: vk,
                   book: bookName,
@@ -2655,19 +2568,10 @@
       var ta = document.getElementById('ta_note_' + vk);
       var val = ta ? ta.value.trim() : '';
 
-      var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
-      var pureText = domCard ? (domCard.getAttribute('data-puretext') || '') : '';
-
       if (val.length === 0) {
         delete verseNotes[vk];
       } else {
-        verseNotes[vk] = {
-          noteText: val,
-          verName: currentVerName,
-          pureText: pureText,
-          day: activeDay
-        };
+        verseNotes[vk] = val;
       }
       saveJournals();
 
@@ -2686,12 +2590,28 @@
       if (box) box.style.display = 'none';
 
       activeOpenNoteKey = null;
-
-      try {
-        renderJournalAlignedRows(activeDay);
-      } catch(e) {}
-
       showToast('묵상 메모가 저장되었습니다!');
+    }
+
+    function openNoteBox(vk) {
+      if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
+        saveNoteInside(activeOpenNoteKey);
+      }
+      var box = document.getElementById('box_note_' + vk);
+      var ind = document.getElementById('ind_note_' + vk);
+      var ta = document.getElementById('ta_note_' + vk);
+
+      if (box) {
+        var isShow = (box.style.display === 'flex' || box.style.display === 'block');
+        if (isShow) {
+          saveNoteInside(vk);
+        } else {
+          box.style.display = 'flex';
+          if (ind) ind.style.display = 'none';
+          if (ta) ta.focus();
+          activeOpenNoteKey = vk;
+        }
+      }
     }
 
   
@@ -2728,23 +2648,13 @@
       var ta = document.getElementById('ta_note_' + vk);
       var val = ta ? ta.value.trim() : '';
 
-      var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
-      var pureText = domCard ? (domCard.getAttribute('data-puretext') || '') : '';
-
       if (val.length === 0) {
         delete verseNotes[vk];
       } else {
-        verseNotes[vk] = {
-          noteText: val,
-          verName: currentVerName,
-          pureText: pureText,
-          day: activeDay
-        };
+        verseNotes[vk] = val;
       }
       saveJournals();
 
-      // Update indicator bar below verse card
       var ind = document.getElementById('ind_note_' + vk);
       if (ind) {
         var txtSpan = ind.querySelector('.note-text-content');
@@ -2756,18 +2666,32 @@
         }
       }
 
-      // Hide the note edit box
       var box = document.getElementById('box_note_' + vk);
       if (box) box.style.display = 'none';
 
       activeOpenNoteKey = null;
-
-      // Sync Journal Tab 2 seamlessly
-      try {
-        renderJournalAlignedRows(activeDay);
-      } catch(e) {}
-
       showToast('묵상 메모가 저장되었습니다!');
+    }
+
+    function openNoteBox(vk) {
+      if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
+        saveNoteInside(activeOpenNoteKey);
+      }
+      var box = document.getElementById('box_note_' + vk);
+      var ind = document.getElementById('ind_note_' + vk);
+      var ta = document.getElementById('ta_note_' + vk);
+
+      if (box) {
+        var isShow = (box.style.display === 'flex' || box.style.display === 'block');
+        if (isShow) {
+          saveNoteInside(vk);
+        } else {
+          box.style.display = 'flex';
+          if (ind) ind.style.display = 'none';
+          if (ta) ta.focus();
+          activeOpenNoteKey = vk;
+        }
+      }
     }
 
     // 4. OPEN / TOGGLE NOTE EDIT BOX
