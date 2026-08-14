@@ -173,48 +173,8 @@
     
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; pointer-events: none; }
 
-        .note-indicator {
-      margin-top: 6px;
-      padding: 8px 12px;
-      background: rgba(255, 153, 0, 0.1);
-      border: 1px dashed var(--accent-gold);
-      border-radius: 6px;
-      font-size: 0.88rem;
-      color: var(--accent-gold);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      width: 100%;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-    .note-indicator > div {
-      flex: 1;
-      min-width: 0;
-      word-break: break-word;
-      word-wrap: break-word;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-    .note-text-content {
-      display: inline;
-      word-break: break-word;
-      word-wrap: break-word;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-    .verse-note-textarea {
-      width: 100%;
-      box-sizing: border-box;
-      word-break: break-word;
-      word-wrap: break-word;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-      line-height: 1.5;
-      min-height: 75px;
-      resize: vertical;
+    .note-indicator {
+      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 8px 10px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; line-height: 1.5; white-space: pre-wrap;
     }
 
     .btn-copy-note {
@@ -584,7 +544,6 @@
 <script src="bible_Zephaniah.js"></script>
 
   <script src="bible_db_66.js" defer></script>
-  <script src="bible_db_66.js" onload="if(window.renderBible && window.scheduleData && window.activeDay) checkAndTriggerBibleRender();"></script>
 </head>
 <body>
 
@@ -644,25 +603,17 @@
     </section>
 
     <!-- TAB 2: 일기쓰기 -->
-        <section id="tab-editor" class="tab-page">
-      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
-        <span>✏️ 통독 일기 작성</span>
+    <section id="tab-editor" class="tab-page">
+      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
+        ✏️ 통독 일기 작성
       </div>
-      <div class="journal-grid-container">
-        <div class="journal-box">
-          <div class="journal-box-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <div class="journal-box-title" style="margin-bottom: 0;">📖 은혜받은 말씀</div>
-            <button class="btn-copy-journal-box" onclick="copyGraceTextOnly()">📋 구절 복사</button>
-          </div>
-          <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
-        </div>
-        <div class="journal-box">
-          <div class="journal-box-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <div class="journal-box-title" style="margin-bottom: 0;">💡 받은 교훈 및 적용</div>
-            <button class="btn-copy-journal-box" onclick="copyLessonTextOnly()">📋 묵상 복사</button>
-          </div>
-          <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
-        </div>
+      <div class="journal-box">
+        <div class="journal-box-title">📖 은혜받은 말씀</div>
+        <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
+      </div>
+      <div class="journal-box">
+        <div class="journal-box-title">💡 받은 교훈 및 적용</div>
+        <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
       </div>
     </section>
 
@@ -1016,17 +967,23 @@
         targetEl.classList.add('selected-cursor-verse');
 
         // Immediately start reading from touched verse!
-        if (isTTSSpeaking) {
-          if ('speechSynthesis' in window) {
-            try { window.speechSynthesis.cancel(); } catch(e) {}
-          }
-          speakNextVerseTTS();
-        } else {
-          var vNum = targetEl.getAttribute('data-vnum');
-          if (vNum) {
-            showToast(vNum + '절이 시작 구절로 지정되었습니다. 낭독 버튼을 누르시면 재생됩니다.');
-          }
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch(e) {}
         }
+        isTTSSpeaking = true;
+        isTTSPaused = false;
+
+        var bgAudio = document.getElementById('bgSilentAudio');
+        if (bgAudio) {
+          try { bgAudio.play().catch(function(e){}); } catch(e) {}
+        }
+
+        if ('wakeLock' in navigator) {
+          try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
+        }
+
+        updatePlayerControlsUI();
+        speakNextVerseTTS();
       }
     }
 
@@ -1439,53 +1396,63 @@
       }
     }
 
+    // CLEAN SAFE CLIPBOARD COPY ENGINE
     function copyTextToClipboard(text, msg) {
       if (!text) return;
       var successMessage = msg || '복사되었습니다!';
 
-      if (navigator.clipboard && window.isSecureContext) {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
         navigator.clipboard.writeText(text).then(function() {
           showToast(successMessage);
         }).catch(function() {
-          fallbackCopyTextToClipboard(text, successMessage);
+          executeFallbackCopy(text, successMessage);
         });
         return;
       }
-      fallbackCopyTextToClipboard(text, successMessage);
+      executeFallbackCopy(text, successMessage);
     }
 
-    function fallbackCopyTextToClipboard(text, msg) {
+    function executeFallbackCopy(text, msg) {
       try {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.top = '0';
-        ta.style.left = '0';
-        ta.style.width = '2em';
-        ta.style.height = '2em';
-        ta.style.padding = '0';
-        ta.style.border = 'none';
-        ta.style.outline = 'none';
-        ta.style.boxShadow = 'none';
-        ta.style.background = 'transparent';
-        ta.style.opacity = '0.01';
-        document.body.appendChild(ta);
-        
-        ta.focus();
-        ta.select();
-        ta.setSelectionRange(0, 999999);
+        var dummy = document.createElement('textarea');
+        dummy.value = text;
+        dummy.setAttribute('readonly', '');
+        dummy.style.position = 'fixed';
+        dummy.style.top = '0';
+        dummy.style.left = '-9999px';
+        dummy.style.fontSize = '12pt';
+        document.body.appendChild(dummy);
+
+        dummy.select();
+        dummy.setSelectionRange(0, 999999);
 
         var successful = document.execCommand('copy');
-        document.body.removeChild(ta);
+        document.body.removeChild(dummy);
 
-        if (successful) {
-          showToast(msg || '복사되었습니다!');
-        } else {
-          showToast('복사에 성공하였습니다!');
-        }
+        showToast(msg || '복사되었습니다!');
       } catch (err) {
-        showToast('클립보드 복사 완료!');
+        showToast(msg || '복사되었습니다!');
       }
+    }
+
+    function copyGraceTextOnly() {
+      var el = document.getElementById('editorGrace');
+      var val = el ? el.value.trim() : '';
+      if (!val) {
+        showToast('은혜받은 말씀에 작성된 내용이 없습니다.');
+        return;
+      }
+      copyTextToClipboard(val, '은혜받은 말씀이 복사되었습니다!');
+    }
+
+    function copyLessonTextOnly() {
+      var el = document.getElementById('editorLesson');
+      var val = el ? el.value.trim() : '';
+      if (!val) {
+        showToast('받은 교훈 및 적용에 작성된 내용이 없습니다.');
+        return;
+      }
+      copyTextToClipboard(val, '받은 교훈 및 적용 묵상이 복사되었습니다!');
     }
 
     function autoSaveActiveNote() {
@@ -1601,8 +1568,7 @@
             var vNum = (idx + 1);
             var verseKey = bookName + '_' + c + '_' + vNum;
             var formattedCopyStr = '[' + bookName + ' ' + c + ':' + vNum + '] ' + vText;
-            var savedNoteRaw = verseNotes[verseKey] || '';
-            var savedNote = (typeof savedNoteRaw === 'object' && savedNoteRaw !== null) ? (savedNoteRaw.noteText || savedNoteRaw.note || '').toString() : savedNoteRaw.toString();
+            var savedNote = verseNotes[verseKey] || '';
 
             var itemEl = document.createElement('div');
             itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
@@ -1912,82 +1878,6 @@
         }
       }
     });
-
-  
-    // SCREEN WAKE LOCK KEEPER
-    var globalWakeLock = null;
-    async function requestScreenWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          globalWakeLock = await navigator.wakeLock.request('screen');
-        }
-      } catch (err) {}
-    }
-    document.addEventListener('visibilitychange', function() {
-      if (document.visibilityState === 'visible' && isPlayingAudio) {
-        requestScreenWakeLock();
-      }
-    });
-
-  
-    // AUTOMATIC DB LOAD RETRY ENGINE (FOR 14MB MOBILE CONNECTIONS)
-    function checkAndTriggerBibleRender() {
-      if (typeof scheduleData !== 'undefined' && typeof activeDay !== 'undefined') {
-        renderBible(scheduleData[activeDay]);
-      }
-      var db = getBibleDatabase();
-      if (!db || Object.keys(db).length === 0) {
-        var retryCount = 0;
-        var dbTimer = setInterval(function() {
-          retryCount++;
-          var currentDb = getBibleDatabase();
-          if (currentDb && Object.keys(currentDb).length > 0) {
-            clearInterval(dbTimer);
-            if (typeof scheduleData !== 'undefined' && typeof activeDay !== 'undefined') {
-              renderBible(scheduleData[activeDay]);
-            }
-          } else if (retryCount > 30) {
-            clearInterval(dbTimer);
-          }
-        }, 400);
-      }
-    }
-
-  
-    // DEDICATED TAB 2 COPY FUNCTIONS
-    function copyGraceTextOnly() {
-      var el = document.getElementById('editorGrace');
-      var val = el ? el.value.trim() : '';
-      if (!val) {
-        showToast('은혜받은 말씀에 작성된 내용이 없습니다.');
-        return;
-      }
-      if (el) {
-        try {
-          el.focus();
-          el.select();
-          el.setSelectionRange(0, 999999);
-        } catch(e){}
-      }
-      copyTextToClipboard(val, '은혜받은 말씀이 복사되었습니다!');
-    }
-
-    function copyLessonTextOnly() {
-      var el = document.getElementById('editorLesson');
-      var val = el ? el.value.trim() : '';
-      if (!val) {
-        showToast('받은 교훈 및 적용에 작성된 내용이 없습니다.');
-        return;
-      }
-      if (el) {
-        try {
-          el.focus();
-          el.select();
-          el.setSelectionRange(0, 999999);
-        } catch(e){}
-      }
-      copyTextToClipboard(val, '받은 교훈 및 적용 묵상이 복사되었습니다!');
-    }
 
   </script>
   <audio id="bgSilentAudio" loop preload="auto" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="></audio>
