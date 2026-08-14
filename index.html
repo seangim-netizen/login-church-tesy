@@ -187,24 +187,34 @@
       width: 100%;
       box-sizing: border-box;
       overflow: hidden;
+    }
+    .note-indicator > div {
+      flex: 1;
+      min-width: 0;
       word-break: break-word;
       word-wrap: break-word;
-      overflow-wrap: break-word;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      line-height: 1.5;
     }
     .note-text-content {
-      display: inline-block;
-      width: 100%;
+      display: inline;
       word-break: break-word;
       word-wrap: break-word;
-      overflow-wrap: break-word;
+      overflow-wrap: anywhere;
       white-space: pre-wrap;
+      line-height: 1.5;
     }
     .verse-note-textarea {
       width: 100%;
       box-sizing: border-box;
       word-break: break-word;
       word-wrap: break-word;
-      overflow-wrap: break-word;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      min-height: 75px;
+      resize: vertical;
     }
 
     .btn-copy-note {
