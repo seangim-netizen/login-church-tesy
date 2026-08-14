@@ -526,7 +526,7 @@
 <script src="bible_Zephaniah.js"></script>
 
   <script src="bible_db_66.js" defer></script>
-  <script src="bible_db_66.js"></script>
+  <script src="bible_db_66.js" onload="if(window.renderBible && window.scheduleData && window.activeDay) checkAndTriggerBibleRender();"></script>
 </head>
 <body>
 
@@ -1833,6 +1833,30 @@
         requestScreenWakeLock();
       }
     });
+
+  
+    // AUTOMATIC DB LOAD RETRY ENGINE (FOR 14MB MOBILE CONNECTIONS)
+    function checkAndTriggerBibleRender() {
+      if (typeof scheduleData !== 'undefined' && typeof activeDay !== 'undefined') {
+        renderBible(scheduleData[activeDay]);
+      }
+      var db = getBibleDatabase();
+      if (!db || Object.keys(db).length === 0) {
+        var retryCount = 0;
+        var dbTimer = setInterval(function() {
+          retryCount++;
+          var currentDb = getBibleDatabase();
+          if (currentDb && Object.keys(currentDb).length > 0) {
+            clearInterval(dbTimer);
+            if (typeof scheduleData !== 'undefined' && typeof activeDay !== 'undefined') {
+              renderBible(scheduleData[activeDay]);
+            }
+          } else if (retryCount > 30) {
+            clearInterval(dbTimer);
+          }
+        }, 400);
+      }
+    }
 
   </script>
   <audio id="bgSilentAudio" loop preload="auto" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="></audio>
