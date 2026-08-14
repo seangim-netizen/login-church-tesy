@@ -1498,9 +1498,7 @@
         return;
       }
 
-      var db = window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_FULL_DB || {};
-      if (currentBibleVersion === 'KH') db = window.BIBLE_FULL_DB_KH || window.BIBLE_66_DB_KH || window.BIBLE_FULL_DB || {};
-      if (currentBibleVersion === 'SB') db = window.BIBLE_FULL_DB_SB || window.BIBLE_66_DB_SB || window.BIBLE_FULL_DB || {};
+      var db = getBibleDatabase();
 
       (item.books || []).forEach(function(bInfo) {
         var bookName = bInfo.book;
