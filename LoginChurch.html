@@ -2130,7 +2130,7 @@
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
                 '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
                 '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
-                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '" onclick="saveNoteInside(\'' + verseKey + '\')">저장 완료</button>' +
+                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">저장 완료</button>' +
               '</div>';
 
             var pressTimer = null;
@@ -2193,10 +2193,15 @@
 
             var btnSave = itemEl.querySelector('#btnsave_' + verseKey);
             if (btnSave) {
-              btnSave.onclick = function(ev) {
-                ev.stopPropagation();
+              var handleSaveClick = function(ev) {
+                if (ev) {
+                  ev.preventDefault();
+                  ev.stopPropagation();
+                }
                 saveNoteInside(verseKey);
               };
+              btnSave.onclick = handleSaveClick;
+              btnSave.ontouchend = handleSaveClick;
             }
 
             container.appendChild(itemEl);
