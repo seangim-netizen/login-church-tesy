@@ -886,6 +886,10 @@
 
     // IMPERATIVE IMMEDIATE PAUSE & STOP METHOD
     function stopTTSAudio(isFullReset) {
+      var bgAudio = document.getElementById('bgSilentAudio');
+      if (bgAudio) {
+        try { bgAudio.pause(); } catch(e) {}
+      }
       isTTSSpeaking = false;
       
       if ('speechSynthesis' in window) {
@@ -1056,6 +1060,13 @@
     }
 
     function startTTSAudio() {
+      var bgAudio = document.getElementById('bgSilentAudio');
+      if (bgAudio) {
+        try { bgAudio.play().catch(function(e){}); } catch(e) {}
+      }
+      if ('wakeLock' in navigator) {
+        try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
+      }
       if (!('speechSynthesis' in window)) {
         alert('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
         return;
@@ -1105,6 +1116,16 @@
     }
 
     function speakNextVerseTTS() {
+      // Background Audio Heartbeat Keep-Alive for Screen Off / Lock Screen Playback
+      if (!window.ttsHeartbeatInterval) {
+        window.ttsHeartbeatInterval = setInterval(function() {
+          if (isTTSSpeaking && 'speechSynthesis' in window) {
+            if (window.speechSynthesis.paused) {
+              try { window.speechSynthesis.resume(); } catch(e) {}
+            }
+          }
+        }, 3000);
+      }
       if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
         var wasSpeaking = isTTSSpeaking;
         stopTTSAudio(true);
@@ -1127,6 +1148,35 @@
       }
 
       updatePlayerControlsUI();
+
+      // Update Smartphone Lock Screen & Background Media Control Center
+      if ('mediaSession' in navigator && itemObj) {
+        try {
+          var infoText = itemObj.speakText || '성경 통독';
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: infoText.length > 35 ? infoText.substring(0, 35) + '...' : infoText,
+            artist: 'LoginChurch 성경통독일기장',
+            album: '📖 성경 통독 낭독 중',
+            artwork: [
+              { src: 'app_logo.png', sizes: '512x512', type: 'image/png' },
+              { src: 'header_logo.png', sizes: '512x512', type: 'image/png' }
+            ]
+          });
+
+          navigator.mediaSession.setActionHandler('play', function() {
+            if (!isTTSSpeaking) startTTSAudio();
+          });
+          navigator.mediaSession.setActionHandler('pause', function() {
+            stopTTSAudio(false);
+          });
+          navigator.mediaSession.setActionHandler('previoustrack', function() {
+            playPrevTTSVerse();
+          });
+          navigator.mediaSession.setActionHandler('nexttrack', function() {
+            playNextTTSVerse();
+          });
+        } catch(e) {}
+      }
 
       var utterance = new SpeechSynthesisUtterance(itemObj.speakText);
       utterance.lang = 'ko-KR';
@@ -1752,5 +1802,6 @@
     renderSchedule();
   });
   </script>
+  <audio id="bgSilentAudio" loop preload="auto" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="></audio>
 </body>
 </html>

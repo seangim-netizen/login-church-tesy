@@ -1229,6 +1229,10 @@
 
     // IMPERATIVE IMMEDIATE PAUSE & STOP METHOD
     function stopTTSAudio(isFullReset) {
+      var bgAudio = document.getElementById('bgSilentAudio');
+      if (bgAudio) {
+        try { bgAudio.pause(); } catch(e) {}
+      }
       isTTSSpeaking = false;
       disableBackgroundAudioSession();
       
@@ -1403,6 +1407,13 @@
     }
 
     function startTTSAudio() {
+      var bgAudio = document.getElementById('bgSilentAudio');
+      if (bgAudio) {
+        try { bgAudio.play().catch(function(e){}); } catch(e) {}
+      }
+      if ('wakeLock' in navigator) {
+        try { navigator.wakeLock.request('screen').catch(function(e){}); } catch(e) {}
+      }
       if (!('speechSynthesis' in window)) {
         alert('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
         return;
@@ -1454,6 +1465,16 @@
     }
 
     function speakNextVerseTTS() {
+      // Background Audio Heartbeat Keep-Alive for Screen Off / Lock Screen Playback
+      if (!window.ttsHeartbeatInterval) {
+        window.ttsHeartbeatInterval = setInterval(function() {
+          if (isTTSSpeaking && 'speechSynthesis' in window) {
+            if (window.speechSynthesis.paused) {
+              try { window.speechSynthesis.resume(); } catch(e) {}
+            }
+          }
+        }, 3000);
+      }
       if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
         var wasSpeaking = isTTSSpeaking;
         stopTTSAudio(true);
