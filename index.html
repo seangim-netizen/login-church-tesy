@@ -2130,7 +2130,7 @@
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
                 '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
                 '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
-                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">저장 완료</button>' +
+                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '" onclick="saveNoteInside(\'' + verseKey + '\')">저장 완료</button>' +
               '</div>';
 
             var pressTimer = null;
@@ -2195,11 +2195,7 @@
             if (btnSave) {
               btnSave.onclick = function(ev) {
                 ev.stopPropagation();
-                autoSaveActiveNote();
-                var box = itemEl.querySelector('#box_note_' + verseKey);
-                if (box) box.style.display = 'none';
-                activeOpenNoteKey = null;
-                showToast('묵상 메모가 저장되었습니다!');
+                saveNoteInside(verseKey);
               };
             }
 
@@ -2648,6 +2644,53 @@
         journals[dayKey].lesson = fullLessonStrList.join('\n\n');
         saveJournals();
       }
+    }
+
+  
+    function saveNoteInside(vk) {
+      if (!vk) vk = activeOpenNoteKey;
+      if (!vk) return;
+
+      var ta = document.getElementById('ta_note_' + vk);
+      var val = ta ? ta.value.trim() : '';
+
+      var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+      var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
+      var pureText = domCard ? (domCard.getAttribute('data-puretext') || '') : '';
+
+      if (val.length === 0) {
+        delete verseNotes[vk];
+      } else {
+        verseNotes[vk] = {
+          noteText: val,
+          verName: currentVerName,
+          pureText: pureText,
+          day: activeDay
+        };
+      }
+      saveJournals();
+
+      var ind = document.getElementById('ind_note_' + vk);
+      if (ind) {
+        var txtSpan = ind.querySelector('.note-text-content');
+        if (val.length > 0) {
+          if (txtSpan) txtSpan.innerText = val;
+          ind.style.display = 'flex';
+        } else {
+          ind.style.display = 'none';
+        }
+      }
+
+      var box = document.getElementById('box_note_' + vk);
+      if (box) box.style.display = 'none';
+
+      activeOpenNoteKey = null;
+
+      try {
+        renderJournalAlignedRows(activeDay);
+      } catch(e) {}
+
+      showToast('묵상 메모가 저장되었습니다!');
     }
 
   </script>
