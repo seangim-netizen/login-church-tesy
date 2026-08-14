@@ -2194,6 +2194,9 @@
               btnSave.onclick = function(ev) {
                 ev.stopPropagation();
                 autoSaveActiveNote();
+                var box = itemEl.querySelector('#box_note_' + verseKey);
+                if (box) box.style.display = 'none';
+                activeOpenNoteKey = null;
                 showToast('묵상 메모가 저장되었습니다!');
               };
             }
