@@ -1970,26 +1970,20 @@
       if (el && journals[dayKey].lesson) el.value = journals[dayKey].lesson;
     }
 
+    // =========================================================================
+    // 9:26 AM ROCK-SOLID STABLE VERSION
+    // =========================================================================
+
     function autoSaveActiveNote() {
       if (!activeOpenNoteKey) return;
       var ta = document.getElementById('ta_note_' + activeOpenNoteKey);
       if (ta) {
         var vk = activeOpenNoteKey;
         var val = ta.value.trim();
-        var currentVerName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-
-        var domCard = document.querySelector('.bible-verse-card[data-vkey="' + vk + '"]');
-        var pureText = domCard ? (domCard.getAttribute('data-puretext') || '') : '';
-
         if (val.length === 0) {
           delete verseNotes[vk];
         } else {
-          verseNotes[vk] = {
-            noteText: val,
-            verName: currentVerName,
-            pureText: pureText,
-            day: activeDay
-          };
+          verseNotes[vk] = val;
         }
         saveJournals();
 
@@ -2003,15 +1997,44 @@
             ind.style.display = 'none';
           }
         }
-
-        // Sync with Journal Tab automatically
-        renderJournalAlignedRows(activeDay);
       }
+    }
+
+    function saveNoteInside(vk) {
+      if (!vk) vk = activeOpenNoteKey;
+      if (!vk) return;
+
+      var ta = document.getElementById('ta_note_' + vk);
+      var val = ta ? ta.value.trim() : '';
+
+      if (val.length === 0) {
+        delete verseNotes[vk];
+      } else {
+        verseNotes[vk] = val;
+      }
+      saveJournals();
+
+      var ind = document.getElementById('ind_note_' + vk);
+      if (ind) {
+        var txtSpan = ind.querySelector('.note-text-content');
+        if (val.length > 0) {
+          if (txtSpan) txtSpan.innerText = val;
+          ind.style.display = 'flex';
+        } else {
+          ind.style.display = 'none';
+        }
+      }
+
+      var box = document.getElementById('box_note_' + vk);
+      if (box) box.style.display = 'none';
+
+      activeOpenNoteKey = null;
+      showToast('묵상 메모가 저장되었습니다!');
     }
 
     function openNoteBox(vk) {
       if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
-        autoSaveActiveNote();
+        saveNoteInside(activeOpenNoteKey);
       }
       var box = document.getElementById('box_note_' + vk);
       var ind = document.getElementById('ind_note_' + vk);
@@ -2020,19 +2043,17 @@
       if (box) {
         var isShow = (box.style.display === 'flex' || box.style.display === 'block');
         if (isShow) {
-          autoSaveActiveNote();
+          saveNoteInside(vk);
         } else {
           box.style.display = 'flex';
           if (ind) ind.style.display = 'none';
-          if (ta) {
-            ta.focus();
-          }
+          if (ta) ta.focus();
           activeOpenNoteKey = vk;
         }
       }
     }
 
-        function getBibleDatabase() {
+    function getBibleDatabase() {
       var db = null;
       if (currentBibleVersion === 'KH') {
         db = (window.BIBLE_FULL_DB_KH && Object.keys(window.BIBLE_FULL_DB_KH).length > 0) ? window.BIBLE_FULL_DB_KH : window.BIBLE_66_DB_KH;
@@ -2052,6 +2073,7 @@
       }
       return db;
     }
+
     function renderBible(item) {
       autoSaveActiveNote();
       selectedCursorVerseIndex = 0;
@@ -2086,8 +2108,7 @@
             var vNum = (idx + 1);
             var verseKey = bookName + '_' + c + '_' + vNum;
             var formattedCopyStr = '[' + bookName + ' ' + c + ':' + vNum + '] ' + vText;
-            var savedNoteRaw = verseNotes[verseKey] || '';
-            var savedNote = (typeof savedNoteRaw === 'object' && savedNoteRaw !== null) ? (savedNoteRaw.noteText || '') : (savedNoteRaw || '');
+            var savedNote = (typeof verseNotes[verseKey] === 'object' && verseNotes[verseKey] !== null) ? (verseNotes[verseKey].noteText || '') : (verseNotes[verseKey] || '');
             var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
             var itemEl = document.createElement('div');
@@ -2105,7 +2126,7 @@
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
                 '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
                 '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
-                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '" onclick="event.stopPropagation(); saveNoteInside(\'' + verseKey + '\');">저장 완료</button>' +
+                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">저장 완료</button>' +
               '</div>';
 
             var pressTimer = null;
